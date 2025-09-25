@@ -24,7 +24,7 @@ def sp_map_dashboard(request):
     
     # Criar mapa focado em SP
     sp_map = folium.Map(
-        location=[-23.9505, -46.6333],
+        location=[-23.6905, -46.6333],
         zoom_start=10,
         tiles='OpenStreetMap',
         control_scale=True,
@@ -50,12 +50,15 @@ def sp_map_dashboard(request):
 
     # Adicionar dados de exemplo (opcional)
     #add_sample_data(sp_map)
-
+    
+    # Calcular estatísticas reais
+    estatisticas = calcular_estatisticas()
     map_html = sp_map._repr_html_()
 
     context = {
         'map_html': map_html,
-        'title': 'Mapa de São Paulo - Ciclovias e Limites'
+        'title': 'Dashboard SP - Análise de Dados',
+        'estatisticas': estatisticas  # Passar dados para o template
     }
     # Forçar o zoom nos limites de SP
     sp_map.fit_bounds(bounds)
@@ -93,7 +96,7 @@ def add_mask_layer(map_object, sp_geojson):
         world_with_hole,
         name='Área de Foco',
         style_function=lambda x: {
-            'fillColor': 'white',
+            'fillColor': 'whitesmoke',
             'color': 'white',
             'weight': 0,
             'fillOpacity': 1
@@ -278,6 +281,32 @@ def add_sample_data(map_object):
             tooltip=nome,
             icon=folium.Icon(color=cor, icon=icone)
         ).add_to(map_object)
+
+def calcular_estatisticas():
+    """Calcula estatísticas reais dos dados"""
+    try:
+        distritos_data = get_distritos_sp()
+        ciclovias_data = get_ciclovias_sp()
+        
+        # Estatísticas básicas
+        estatisticas = {
+            'total_ciclovias': len(ciclovias_data.get('features', [])) if ciclovias_data else 0,
+            'total_distritos': len(distritos_data.get('features', [])) if distritos_data else 0,
+            'total_subprefeituras': 32,  # Fixo para SP
+        }
+        
+        # Aqui você pode adicionar cálculos mais complexos
+        # como distribuição por região, tipos de ciclovia, etc.
+        
+        return estatisticas
+        
+    except Exception as e:
+        print(f"Erro ao calcular estatísticas: {e}")
+        return {
+            'total_ciclovias': 0,
+            'total_distritos': 0,
+            'total_subprefeituras': 0
+        }
 
 #! Mantenha a view de debug para verificação
 
