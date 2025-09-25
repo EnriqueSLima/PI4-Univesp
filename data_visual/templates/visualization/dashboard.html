@@ -1,24 +1,141 @@
-{% load static %}
+<!-- data_visual/templates/visualization/dashboard.html -->
+{% load static %} 
 
-{% block 'head' %}
-    <link rel="stylesheet" href="{% static 'data_visual/css/style.css' %}">
-{% endblock 'head'%}
-
-<body>
-    <div class="header">
-        <h1><i class="fas fa-map-marked-alt"></i> {{ title }}</h1>
-    </div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
     
-    <div id="map">
-        {{ map_html|safe }}
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0/css/all.min.css">
+
+    <!-- CSS proprio -->
+    <link rel="stylesheet" href="{% static 'data_visual/css/style.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar com Gráficos -->
+        <div class="sidebar">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-map-marked-alt"></i> {{ title }}</h1>
+                <p>Dashboard de Análise de Dados - São Paulo</p>
+            </div>
+            
+            <!-- Estatísticas Rápidas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-bicycle fa-2x"></i>
+                    <div class="stat-number" id="ciclovias-count">--</div>
+                    <div class="stat-label">Ciclovias</div>
+                </div>
+                
+                <div class="stat-card">
+                    <i class="fas fa-tree fa-2x"></i>
+                    <div class="stat-number" id="distritos-count">--</div>
+                    <div class="stat-label">Distritos</div>
+                </div>
+                
+                <div class="stat-card">
+                    <i class="fas fa-building fa-2x"></i>
+                    <div class="stat-number" id="subprefeituras-count">--</div>
+                    <div class="stat-label">Subprefeituras</div>
+                </div>
+            </div>
+            
+            <!-- Gráfico 1: Distribuição por Zona -->
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Distribuição por Região</h3>
+                <div class="chart-container">
+                    <canvas id="regiaoChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Gráfico 2: Evolução Temporal -->
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-line"></i> Evolução de Infraestrutura</h3>
+                <div class="chart-container">
+                    <canvas id="evolucaoChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Gráfico 3: Comparação por Tipo -->
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar"></i> Comparação por Tipo</h3>
+                <div class="chart-container">
+                    <canvas id="tipoChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Container do Mapa -->
+        <div class="map-container">
+            <div class="map">
+                {{ map_html|safe }}
+            </div>
+        </div>
     </div>
 
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{% static 'data_visual/js/charts.js' %}"></script>
+    
     <script>
-        // Scripts adicionais para interatividade
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Mapa de São Paulo carregado!');
-        });
+        // Debug temporário - remover depois que funcionar
+        setTimeout(function() {
+            console.log('=== DEBUG DE ALTURAS ===');
+            console.log('Janela:', window.innerHeight, 'x', window.innerWidth);
+            console.log('Map Container:', document.getElementById('map-container')?.offsetHeight);
+            console.log('Map Element:', document.querySelector('.map')?.offsetHeight);
+            console.log('Leaflet Container:', document.querySelector('.leaflet-container')?.offsetHeight);
+        }, 1000);
+    // Script final no template
+        function forceMapHeight() {
+            // Encontrar todos os elementos possíveis do mapa
+            const elements = [
+                document.getElementById('map-container'),
+                document.querySelector('.folium-map'),
+                document.querySelector('.leaflet-container'),
+                document.querySelector('.map')
+            ];
+            
+            elements.forEach(el => {
+                if (el) {
+                    el.style.height = '100vh';
+                    el.style.minHeight = '100vh';
+                }
+            });
+            
+            // Forçar iframes também
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.style.height = '100vh';
+                iframe.style.width = '100%';
+            });
+            
+            // Redimensionar mapa Leaflet
+            if (typeof map !== 'undefined') {
+                setTimeout(() => {
+                    map.invalidateSize();
+                    map._onResize();
+                }, 100);
+            }
+        }
+        
+        // Executar múltiplas vezes
+        document.addEventListener('DOMContentLoaded', forceMapHeight);
+        window.addEventListener('load', forceMapHeight);
+        setTimeout(forceMapHeight, 500);
+        setTimeout(forceMapHeight, 1000);
+        setTimeout(forceMapHeight, 2000);
     </script>
+
 </body>
 </html>
