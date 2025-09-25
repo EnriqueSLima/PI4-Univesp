@@ -2,6 +2,9 @@
 
 Projeto Integrador IV Univesp
 
+Requisitos:
+    python 3.x
+
 1 - Recomendado a criação de um ambiente virtual.
 
 Linux:
