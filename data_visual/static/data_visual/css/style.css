@@ -1,71 +1,176 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f5f5;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.header {
+html, body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Remove scroll global */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: whitesmoke;
+}
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* Sidebar - Gráficos (60%) */
+.sidebar {
+    width: 60%;
+    background: white;
+    padding: 15px;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    height: 100vh; /* Altura total */
+}
+
+/* Mapa (40%) - CORREÇÃO PRINCIPAL AQUI */
+.map-container {
+    width: 40%;
+    height: 100vh !important;
+    position: relative;
+}
+
+.map {
+    width: 100%;
+    height: 100% !important;
+}
+
+/* Header do Dashboard */
+.dashboard-header {
     background: linear-gradient(135deg, #2c3e50, #3498db);
     color: white;
     padding: 1.5rem;
     text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: -20px -20px 20px -20px;
 }
 
-.header h1 {
+.dashboard-header h1 {
     margin-bottom: 0.5rem;
-    font-size: 2.2rem;
+    font-size: 1.8rem;
 }
 
-.header p {
-    opacity: 0.9;
-    font-size: 1.1rem;
-}
-
-.info-panel {
-    position: absolute;
-    top: 120px;
-    left: 20px;
-    z-index: 1000;
+/* Cards de Gráficos */
+.chart-card {
     background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    max-width: 300px;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-left: 4px solid #3498db;
 }
 
-.info-panel h3 {
+.chart-card h3 {
     color: #2c3e50;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 0.5rem;
-}
-
-.legend {
-    margin-top: 1rem;
-}
-
-.legend-item {
+    margin-bottom: 15px;
     display: flex;
     align-items: center;
-    margin: 0.5rem 0;
+    gap: 10px;
 }
 
-.legend-color {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    border-radius: 3px;
+.chart-card h3 i {
+    color: #3498db;
 }
 
-#map { 
-    height: calc(100vh - 80px); 
-    width: 100%; 
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
 }
 
-.leaflet-control-layers {
+/* Estatísticas Rápidas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Controles do Mapa */
+.map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
     background: white;
-    border-radius: 5px;
     padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
+
+/* Scrollbar da sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Garantir que todos os pais tenham altura definida */
+/* #map-container, .map, .leaflet-container {
+    height: 100vh !important;
+} */
