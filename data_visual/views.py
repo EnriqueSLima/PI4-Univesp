@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import folium
-from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp, get_ciclovias_sp, validate_geojson_plotting
+from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp #get_ciclovias_sp, validate_geojson_plotting
 
 #   View para mapa focado em São Paulo
 def sp_map_dashboard(request):
@@ -43,7 +43,7 @@ def sp_map_dashboard(request):
     add_distritos_layer(sp_map)
 
     # Adicionar camada de ciclovias (por cima dos distritos)
-    add_ciclovias_layer(sp_map)
+    #add_ciclovias_layer(sp_map)
 
     # Adicionar controles de camadas
     folium.LayerControl().add_to(sp_map)
@@ -91,7 +91,6 @@ def add_mask_layer(map_object, sp_geojson):
             }
         ]
     }
-    
     folium.GeoJson(
         world_with_hole,
         name='Área de Foco',
@@ -108,10 +107,6 @@ def add_mask_layer(map_object, sp_geojson):
 def add_subprefeituras_layer(map_object):
     """Adiciona camada de subprefeituras"""
     subprefeituras_data = get_subprefeituras_sp()
-    
-    if not validate_geojson_plotting(subprefeituras_data, "Subprefeituras"):
-        print("❌ Camada de subprefeituras não carregada")
-        return
     
     # Obter campos disponíveis
     properties = get_feature_properties(subprefeituras_data)
@@ -146,10 +141,6 @@ def add_subprefeituras_layer(map_object):
 def add_distritos_layer(map_object):
     """Adiciona camada de distritos (ajustada para não sobrepor ciclovias)"""
     distritos_data = get_distritos_sp()
-    
-    if not validate_geojson_plotting(distritos_data, "Distritos"):
-        print("❌ Camada de distritos não carregada")
-        return
     
     properties = get_feature_properties(distritos_data)
     tooltip_fields = ['nm_distrito_municipal', 'sg_distrito_municipal']
@@ -207,63 +198,6 @@ def get_feature_properties(geojson_data):
     first_feature = geojson_data['features'][0]
     return first_feature.get('properties', {})
 
-#   Adiciona layer com ciclovias.
-def add_ciclovias_layer(map_object):
-    """Adiciona camada de ciclovias"""
-    ciclovias_data = get_ciclovias_sp()
-    
-    if not validate_geojson_plotting(ciclovias_data, "Ciclovias"):
-        print("❌ Camada de ciclovias não carregada")
-        # Adicionar marcador de aviso
-        folium.Marker(
-            [-23.5600, -46.6400],
-            popup='<b>Ciclovias não carregadas</b><br>Verifique o arquivo GeoJSON',
-            icon=folium.Icon(color='orange', icon='exclamation-triangle')
-        ).add_to(map_object)
-        return
-    
-    # Obter campos disponíveis dinamicamente
-    properties = get_feature_properties(ciclovias_data)
-    available_fields = list(properties.keys())
-    
-    # Escolher campos apropriados para tooltip
-    tooltip_fields = []
-    field_priority = ['nome', 'name', 'logradouro', 'tipo', 'tipo_via', 'descricao']
-    
-    for field in field_priority:
-        if field in available_fields:
-            tooltip_fields = [field]
-            break
-    
-    if not tooltip_fields and available_fields:
-        tooltip_fields = [available_fields[0]]  # Usar primeiro campo disponível
-    
-    # Estilo para ciclovias
-    folium.GeoJson(
-        ciclovias_data,
-        name='Ciclovias',
-        style_function=lambda feature: {
-            'color': 'red',
-            'weight': 2,
-            'opacity': 0.8,
-            'lineCap': 'round',
-            'lineJoin': 'round'
-        },
-        tooltip=folium.GeoJsonTooltip(
-            fields=tooltip_fields,
-            aliases=['Ciclovia:'] * len(tooltip_fields),
-            style=("background-color: white; color: #333; font-size: 11px; padding: 4px;")
-        ) if tooltip_fields else None,
-        popup=folium.GeoJsonPopup(
-            fields=available_fields[:6],  # Mostrar até 6 campos
-            aliases=[f.replace('_', ' ').title() for f in available_fields[:6]],
-            localize=True,
-            max_width=300
-        ),
-        show=True   # Visível por padrão
-    ).add_to(map_object)
-    print("✅ Camada de ciclovias adicionada ao mapa")
-
 #   Função para adicionar marcadores simples
 def add_sample_data(map_object):
     """Adiciona alguns pontos de referência para orientação"""
@@ -282,6 +216,66 @@ def add_sample_data(map_object):
             icon=folium.Icon(color=cor, icon=icone)
         ).add_to(map_object)
 
+#! Ciclovias removidas
+##   Adiciona layer com ciclovias.
+#def add_ciclovias_layer(map_object):
+#    """Adiciona camada de ciclovias"""
+#    ciclovias_data = get_ciclovias_sp()
+#    
+#    if not validate_geojson_plotting(ciclovias_data, "Ciclovias"):
+#        print("❌ Camada de ciclovias não carregada")
+#        # Adicionar marcador de aviso
+#        folium.Marker(
+#            [-23.5600, -46.6400],
+#            popup='<b>Ciclovias não carregadas</b><br>Verifique o arquivo GeoJSON',
+#            icon=folium.Icon(color='orange', icon='exclamation-triangle')
+#        ).add_to(map_object)
+#        return
+#    
+#    # Obter campos disponíveis dinamicamente
+#    properties = get_feature_properties(ciclovias_data)
+#    available_fields = list(properties.keys())
+#    
+#    # Escolher campos apropriados para tooltip
+#    tooltip_fields = []
+#    field_priority = ['nome', 'name', 'logradouro', 'tipo', 'tipo_via', 'descricao']
+#    
+#    for field in field_priority:
+#        if field in available_fields:
+#            tooltip_fields = [field]
+#            break
+#    
+#    if not tooltip_fields and available_fields:
+#        tooltip_fields = [available_fields[0]]  # Usar primeiro campo disponível
+#    
+#    # Estilo para ciclovias
+#    folium.GeoJson(
+#        ciclovias_data,
+#        name='Ciclovias',
+#        style_function=lambda feature: {
+#            'color': 'red',
+#            'weight': 2,
+#            'opacity': 0.8,
+#            'lineCap': 'round',
+#            'lineJoin': 'round'
+#        },
+#        tooltip=folium.GeoJsonTooltip(
+#            fields=tooltip_fields,
+#            aliases=['Ciclovia:'] * len(tooltip_fields),
+#            style=("background-color: white; color: #333; font-size: 11px; padding: 4px;")
+#        ) if tooltip_fields else None,
+#        popup=folium.GeoJsonPopup(
+#            fields=available_fields[:6],  # Mostrar até 6 campos
+#            aliases=[f.replace('_', ' ').title() for f in available_fields[:6]],
+#            localize=True,
+#            max_width=300
+#        ),
+#        show=True   # Visível por padrão
+#    ).add_to(map_object)
+#    print("✅ Camada de ciclovias adicionada ao mapa")
+
+
+#! Cálculos estatísticos
 def calcular_estatisticas():
     """Calcula estatísticas reais dos dados"""
     try:
@@ -307,42 +301,3 @@ def calcular_estatisticas():
             'total_distritos': 0,
             'total_subprefeituras': 0
         }
-
-#! Mantenha a view de debug para verificação
-
-#   View de Debug para distritos e subprefeituras
-def geojson_debug(request):
-    """Página para debug dos arquivos GeoJSON"""
-    from .utils.geo_utils import get_distritos_sp, get_subprefeituras_sp, inspect_geojson
-    import json
-    
-    distritos = get_distritos_sp()
-    subprefeituras = get_subprefeituras_sp()
-    
-    inspect_geojson(distritos, "Distritos")
-    inspect_geojson(subprefeituras, "Subprefeituras")
-    
-    context = {
-        'distritos_fields': list(distritos['features'][0]['properties'].keys()) if distritos and distritos.get('features') else [],
-        'subprefeituras_fields': list(subprefeituras['features'][0]['properties'].keys()) if subprefeituras and subprefeituras.get('features') else [],
-        'distritos_count': len(distritos.get('features', [])) if distritos else 0,
-        'subprefeituras_count': len(subprefeituras.get('features', [])) if subprefeituras else 0,
-    }
-    
-    return render(request, 'visualization/debug.html', context)
-
-#   View de Debug para ciclovias
-def ciclovias_debug(request):
-    """Página específica para debug das ciclovias"""
-    from .utils.geo_utils import inspect_ciclovias_data
-    import json
-    
-    ciclovias_data = inspect_ciclovias_data()
-    
-    context = {
-        'ciclovias_fields': list(ciclovias_data['features'][0]['properties'].keys()) if ciclovias_data and ciclovias_data.get('features') else [],
-        'ciclovias_count': len(ciclovias_data.get('features', [])) if ciclovias_data else 0,
-        'ciclovias_sample': json.dumps(ciclovias_data['features'][0]['properties'], indent=2, ensure_ascii=False) if ciclovias_data and ciclovias_data.get('features') else "Nenhum dado",
-    }
-    
-    return render(request, 'visualization/ciclovias_debug.html', context)
