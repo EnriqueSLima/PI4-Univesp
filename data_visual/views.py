@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import folium
-from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp #get_ciclovias_sp, validate_geojson_plotting
+from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp #get_ciclovias_sp 
 
 #   View para mapa focado em São Paulo
 def sp_map_dashboard(request):
@@ -217,62 +217,52 @@ def add_sample_data(map_object):
         ).add_to(map_object)
 
 #! Ciclovias removidas
-#   Adiciona layer com ciclovias.
-def add_ciclovias_layer(map_object):
-    """Adiciona camada de ciclovias"""
-    ciclovias_data = get_ciclovias_sp()
-    
-    if not validate_geojson_plotting(ciclovias_data, "Ciclovias"):
-        print("❌ Camada de ciclovias não carregada")
-        # Adicionar marcador de aviso
-        folium.Marker(
-            [-23.5600, -46.6400],
-            popup='<b>Ciclovias não carregadas</b><br>Verifique o arquivo GeoJSON',
-            icon=folium.Icon(color='orange', icon='exclamation-triangle')
-        ).add_to(map_object)
-        return
-    
-    # Obter campos disponíveis dinamicamente
-    properties = get_feature_properties(ciclovias_data)
-    available_fields = list(properties.keys())
-    
-    # Escolher campos apropriados para tooltip
-    tooltip_fields = []
-    field_priority = ['nome', 'name', 'logradouro', 'tipo', 'tipo_via', 'descricao']
-    
-    for field in field_priority:
-        if field in available_fields:
-            tooltip_fields = [field]
-            break
-    
-    if not tooltip_fields and available_fields:
-        tooltip_fields = [available_fields[0]]  # Usar primeiro campo disponível
-    
-    # Estilo para ciclovias
-    folium.GeoJson(
-        ciclovias_data,
-        name='Ciclovias',
-        style_function=lambda feature: {
-            'color': 'red',
-            'weight': 2,
-            'opacity': 0.8,
-            'lineCap': 'round',
-            'lineJoin': 'round'
-        },
-        tooltip=folium.GeoJsonTooltip(
-            fields=tooltip_fields,
-            aliases=['Ciclovia:'] * len(tooltip_fields),
-            style=("background-color: white; color: #333; font-size: 11px; padding: 4px;")
-        ) if tooltip_fields else None,
-        popup=folium.GeoJsonPopup(
-            fields=available_fields[:6],  # Mostrar até 6 campos
-            aliases=[f.replace('_', ' ').title() for f in available_fields[:6]],
-            localize=True,
-            max_width=300
-        ),
-        show=True   # Visível por padrão
-    ).add_to(map_object)
-    print("✅ Camada de ciclovias adicionada ao mapa")
+##   Adiciona layer com ciclovias.
+#def add_ciclovias_layer(map_object):
+#    """Adiciona camada de ciclovias"""
+#    ciclovias_data = get_ciclovias_sp()
+#    
+#    # Obter campos disponíveis dinamicamente
+#    properties = get_feature_properties(ciclovias_data)
+#    available_fields = list(properties.keys())
+#    
+#    # Escolher campos apropriados para tooltip
+#    tooltip_fields = []
+#    field_priority = ['nome', 'name', 'logradouro', 'tipo', 'tipo_via', 'descricao']
+#    
+#    for field in field_priority:
+#        if field in available_fields:
+#            tooltip_fields = [field]
+#            break
+#    
+#    if not tooltip_fields and available_fields:
+#        tooltip_fields = [available_fields[0]]  # Usar primeiro campo disponível
+#    
+#    # Estilo para ciclovias
+#    folium.GeoJson(
+#        ciclovias_data,
+#        name='Ciclovias',
+#        style_function=lambda feature: {
+#            'color': 'red',
+#            'weight': 2,
+#            'opacity': 0.8,
+#            'lineCap': 'round',
+#            'lineJoin': 'round'
+#        },
+#        tooltip=folium.GeoJsonTooltip(
+#            fields=tooltip_fields,
+#            aliases=['Ciclovia:'] * len(tooltip_fields),
+#            style=("background-color: white; color: #333; font-size: 11px; padding: 4px;")
+#        ) if tooltip_fields else None,
+#        popup=folium.GeoJsonPopup(
+#            fields=available_fields[:6],  # Mostrar até 6 campos
+#            aliases=[f.replace('_', ' ').title() for f in available_fields[:6]],
+#            localize=True,
+#            max_width=300
+#        ),
+#        show=True   # Visível por padrão
+#    ).add_to(map_object)
+#    print("✅ Camada de ciclovias adicionada ao mapa")
 
 
 #! Cálculos estatísticos
