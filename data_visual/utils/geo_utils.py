@@ -146,7 +146,7 @@ def get_subprefeituras_sp():
     """Carrega GeoJSON das subprefeituras com conversão de coordenadas"""
     return load_local_geojson('geoportal_subprefeitura_v2.geojson')
 
-#def get_ciclovias_sp():
-#    """Carrega GeoJSON das ciclovias"""
-#    return load_local_geojson('geoportal_via_bicicleta.geojson')
-#
+def get_ciclovias_sp():
+    """Carrega GeoJSON das ciclovias"""
+    return load_local_geojson('geoportal_via_bicicleta.geojson')
+
