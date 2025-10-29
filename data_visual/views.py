@@ -5,72 +5,117 @@ from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeitura
 #   View para mapa focado em São Paulo
 def sp_map_dashboard(request):
     """Dashboard com mapa restrito aos limites de SP"""
-    
-    # Obter o GeoJSON de SP para calcular os bounds
+    # Obter o GeoJSON de SP
     sp_geojson = get_sp_geojson()
     
-    # Calcular os limites (bounds) de SP
+    # Calcular os limites (bounds) de São Paulo - SP
     if sp_geojson and sp_geojson.get('features'):
         coordinates = sp_geojson['features'][0]['geometry']['coordinates'][0]
         lats = [coord[1] for coord in coordinates]
         lons = [coord[0] for coord in coordinates]
         
-        sw_bound = [min(lats), min(lons)]  # Sudoeste
-        ne_bound = [max(lats), max(lons)]  # Nordeste
+        sw_bound = [min(lats), min(lons)]
+        ne_bound = [max(lats), max(lons)]
         bounds = [sw_bound, ne_bound]
     else:
-        # Bounds aproximados de SP como fallback
         bounds = [[-23.700, -46.825], [-23.400, -46.365]]
     
-    # Criar mapa focado em SP
+    # Criar mapa
     sp_map = folium.Map(
-        location=[-23.6905, -46.6333],
+        location=[-23.5505, -46.6333],
         zoom_start=10,
         tiles='OpenStreetMap',
         control_scale=True,
-        max_bounds=bounds,  # Restringe o movimento do mapa
-        min_zoom=10,        # Zoom mínimo
-        max_zoom=16         # Zoom máximo
+        min_zoom=10,
+        max_zoom=16
     )
-
-    # Adicionar máscara para área fora de SP
-    add_mask_layer(sp_map, sp_geojson)
-
-    # Adicionar camada de distritos
+    
+    # Adicionar máscara e obter bounds externos
+    outer_bounds = add_mask_layer(sp_map, sp_geojson)
+    
+    # Usar os bounds externos para restringir o movimento
+    if outer_bounds:
+        restriction_bounds = outer_bounds
+    else:
+        # Fallback: expandir um pouco os bounds originais
+        restriction_bounds = [
+            [bounds[0][0] - 0.02, bounds[0][1] - 0.02],
+            [bounds[1][0] + 0.02, bounds[1][1] + 0.02]
+        ]
+    
+    # **SCRIPT DE RESTRIÇÃO USANDO OS BOUNDS DA MÁSCARA**
+    restrict_script = f"""
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {{
+            var map = {sp_map.get_name()};
+            var restrictionBounds = [
+                [{restriction_bounds[0][0]}, {restriction_bounds[0][1]}],
+                [{restriction_bounds[1][0]}, {restriction_bounds[1][1]}]
+            ];
+            
+            // Definir limites máximos do mapa
+            map.setMaxBounds(restrictionBounds);
+            
+            // Fit inicial nos bounds de SP (não nos de restrição)
+            var spBounds = [
+                [{bounds[0][0]}, {bounds[0][1]}],
+                [{bounds[1][0]}, {bounds[1][1]}]
+            ];
+            map.fitBounds(spBounds);
+            
+            // Prevenir que o usuário saia da área permitida
+            map.on('drag', function() {{
+                map.panInsideBounds(restrictionBounds);
+            }});
+        }});
+    </script>
+    """
+    sp_map.get_root().html.add_child(folium.Element(restrict_script))
+    
+    # Adiciona camada de distritos
     add_distritos_layer(sp_map)
-
-    # Adicionar camada de subprefeituras
+    # Adiciona camada de subprefeituras
     add_subprefeituras_layer(sp_map)
-
-    # Adicionar controles de camadas
+    # Adiciona controles de camadas
     folium.LayerControl().add_to(sp_map)
-
-    # Adicionar dados de exemplo (opcional)
+    # Adiciona estações de medição
     add_station_data(sp_map)
 
-    # Calcular estatísticas reais
+    # Calcular estatísticas
     estatisticas = calcular_estatisticas()
+
     map_html = sp_map._repr_html_()
 
     context = {
         'map_html': map_html,
         'title': 'Dashboard SP - Análise de Dados',
-        'estatisticas': estatisticas  # Passar dados para o template
+        'estatisticas': estatisticas
     }
-    # Forçar o zoom nos limites de SP
-    sp_map.fit_bounds(bounds)
     
     return render(request, 'visualization/dashboard.html', context)
 
-#   Adiciona layer com mascara ao redor do município.
+# Adiciona retêngulo branco em volta do município
 def add_mask_layer(map_object, sp_geojson):
-    """Adiciona máscara para área fora dos limites de SP"""
+    """Adiciona máscara retangular para área ao redor de SP"""
     if not sp_geojson or not sp_geojson.get('features'):
         return
     
-    # Criar um polígono muito grande que cobre o mundo inteiro
-    # com um "buraco" no formato de SP
-    world_with_hole = {
+    # Calcular bounds de SP com uma margem
+    coordinates = sp_geojson['features'][0]['geometry']['coordinates'][0]
+    lats = [coord[1] for coord in coordinates]
+    lons = [coord[0] for coord in coordinates]
+    
+    # Bounds de SP
+    sp_sw = [min(lats), min(lons)]
+    sp_ne = [max(lats), max(lons)]
+    
+    # Criar bounds externos com margem (ajuste conforme necessário)
+    margin = 0.15  # Margem em graus
+    outer_sw = [sp_sw[0] - margin, sp_sw[1] - 1.6*margin]
+    outer_ne = [sp_ne[0] + margin, sp_ne[1] + 1.6*margin]
+    
+    # Criar polígono retangular com buraco de SP
+    mask_geojson = {
         "type": "FeatureCollection",
         "features": [
             {
@@ -79,26 +124,37 @@ def add_mask_layer(map_object, sp_geojson):
                 "geometry": {
                     "type": "Polygon",
                     "coordinates": [
-                        # Polígono externo (mundo inteiro)
-                        [[-180, 90], [180, 90], [180, -90], [-180, -90], [-180, 90]],
-                        # "Buraco" no formato de SP (coordenadas invertidas)
+                        # Polígono externo
+                        [
+                            [outer_sw[1], outer_sw[0]],  # SW
+                            [outer_ne[1], outer_sw[0]],  # SE
+                            [outer_ne[1], outer_ne[0]],  # NE
+                            [outer_sw[1], outer_ne[0]],  # NW
+                            [outer_sw[1], outer_sw[0]]   # SW
+                        ],
+                        # "Buraco" no formato de SP
                         sp_geojson['features'][0]['geometry']['coordinates'][0]
                     ]
                 }
             }
         ]
     }
+    
     folium.GeoJson(
-        world_with_hole,
+        mask_geojson,
         name='Área de Foco',
         style_function=lambda x: {
             'fillColor': 'whitesmoke',
-            'color': 'white',
-            'weight': 0,
-            'fillOpacity': 1
+            'color': 'darkgray',
+            'weight': 2,
+            'fillOpacity': 1,
+            'dashArray': '5, 5'
         },
-        show=True  # Visível por padrão
+        show=True
     ).add_to(map_object)
+    
+    # Retornar os bounds externos para usar na restrição do mapa
+    return [outer_sw, outer_ne]
 
 #   Adiciona layer com contorno das sub-prefeituras.
 def add_subprefeituras_layer(map_object):
@@ -130,7 +186,7 @@ def add_subprefeituras_layer(map_object):
             localize=True,
             max_width=250
         ),
-        show=True  # Ocultar por padrão (para não sobrecarregar)
+        show=False  # Ocultar por padrão (para não sobrecarregar)
     ).add_to(map_object)
 
 #   Adiciona layer com contorno dos distritos.
