@@ -132,19 +132,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
-    // Interatividade com o mapa
-    //setTimeout(function() {
-    //    if (typeof map !== 'undefined') {
-    //        // Ajustar zoom para melhor visualização
-    //        map.invalidateSize();
-    //        
-    //        // Exemplo de interação: quando clicar no mapa, atualizar gráficos
-    //        map.on('click', function(e) {
-    //            console.log('Coordenadas clicadas:', e.latlng);
-    //            // Aqui você pode implementar a atualização dos gráficos
-    //            // baseado na localização clicada
-    //        });
-    //    }
-    //}, 1000);
 });
