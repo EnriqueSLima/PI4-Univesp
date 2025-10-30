@@ -86,56 +86,6 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="{% static 'data_visual/js/charts.js' %}"></script>
-    
-    <script>
-        // Debug temporário - remover depois que funcionar
-        setTimeout(function() {
-            console.log('=== DEBUG DE ALTURAS ===');
-            console.log('Janela:', window.innerHeight, 'x', window.innerWidth);
-            console.log('Map Container:', document.getElementById('map-container')?.offsetHeight);
-            console.log('Map Element:', document.querySelector('.map')?.offsetHeight);
-            console.log('Leaflet Container:', document.querySelector('.leaflet-container')?.offsetHeight);
-        }, 1000);
-    // Script final no template
-        function forceMapHeight() {
-            // Encontrar todos os elementos possíveis do mapa
-            const elements = [
-                document.getElementById('map-container'),
-                document.querySelector('.folium-map'),
-                document.querySelector('.leaflet-container'),
-                document.querySelector('.map')
-            ];
-            
-            elements.forEach(el => {
-                if (el) {
-                    el.style.height = '100vh';
-                    el.style.minHeight = '100vh';
-                }
-            });
-            
-            // Forçar iframes também
-            const iframes = document.querySelectorAll('iframe');
-            iframes.forEach(iframe => {
-                iframe.style.height = '100vh';
-                iframe.style.width = '100%';
-            });
-            
-            // Redimensionar mapa Leaflet
-            if (typeof map !== 'undefined') {
-                setTimeout(() => {
-                    map.invalidateSize();
-                    map._onResize();
-                }, 100);
-            }
-        }
-        
-        // Executar múltiplas vezes
-        document.addEventListener('DOMContentLoaded', forceMapHeight);
-        window.addEventListener('load', forceMapHeight);
-        setTimeout(forceMapHeight, 500);
-        setTimeout(forceMapHeight, 1000);
-        setTimeout(forceMapHeight, 2000);
-    </script>
-
+    <script src="{% static 'data_visual/js/map.js' %}"></script>
 </body>
 </html>
