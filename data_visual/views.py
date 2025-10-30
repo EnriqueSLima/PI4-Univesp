@@ -22,7 +22,7 @@ def sp_map_dashboard(request):
     
     # Criar mapa
     sp_map = folium.Map(
-        location=[-23.5505, -46.6333],
+        location=[-23.700, -46.600],
         zoom_start=10,
         tiles='OpenStreetMap',
         control_scale=True,

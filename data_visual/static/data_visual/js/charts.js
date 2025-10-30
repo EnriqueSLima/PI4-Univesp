@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Dados mock - gerados para visualização
     const mockData = {
-        ciclovias: 450,
+        estacoes: 21,
         distritos: 96,
         subprefeituras: 32,
         regioes: {
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         evolucao: {
             anos: ['2018', '2019', '2020', '2021', '2022', '2023'],
-            ciclovias: [120, 180, 250, 320, 390, 450],
+            estacoes: [120, 180, 250, 320, 390, 450],
             areasVerdes: [45, 48, 52, 55, 58, 60]
         },
         tipos: {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     // Atualizar estatísticas
-    document.getElementById('ciclovias-count').textContent = mockData.ciclovias;
+    document.getElementById('ciclovias-count').textContent = mockData.estacoes;
     document.getElementById('distritos-count').textContent = mockData.distritos;
     document.getElementById('subprefeituras-count').textContent = mockData.subprefeituras;
     
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [
                 {
                     label: 'Ciclovias (km)',
-                    data: mockData.evolucao.ciclovias,
+                    data: mockData.evolucao.estacoes,
                     borderColor: '#3498db',
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
                     tension: 0.4,
