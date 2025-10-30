@@ -128,14 +128,14 @@ def load_local_geojson(filename):
             geojson_data = json.load(f)
             
         # Converter coordenadas UTM para Lat/Long
-        print(f"📁 Carregando {filename}...")
+        #print(f"📁 Carregando {filename}...")
         converted_data = coord_converter.convert_geojson(geojson_data)
-        print(f"✅ {filename} convertido com sucesso")
+        #print(f"✅ {filename} convertido com sucesso")
         
         return converted_data
         
     except Exception as e:
-        print(f"❌ Erro ao carregar {filename}: {e}")
+        #print(f"❌ Erro ao carregar {filename}: {e}")
         return None
 
 def get_distritos_sp():
