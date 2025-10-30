@@ -1,5 +1,4 @@
 #   Este arquivo contém funções para tratamento de arquivos .geojson
-
 import requests
 import json
 import os
@@ -128,9 +127,9 @@ def load_local_geojson(filename):
             geojson_data = json.load(f)
             
         # Converter coordenadas UTM para Lat/Long
-        #print(f"📁 Carregando {filename}...")
+        print(f"📁 Carregando {filename}...")
         converted_data = coord_converter.convert_geojson(geojson_data)
-        #print(f"✅ {filename} convertido com sucesso")
+        print(f"✅ {filename} convertido com sucesso")
         
         return converted_data
         
@@ -146,7 +145,4 @@ def get_subprefeituras_sp():
     """Carrega GeoJSON das subprefeituras com conversão de coordenadas"""
     return load_local_geojson('geoportal_subprefeitura_v2.geojson')
 
-def get_ciclovias_sp():
-    """Carrega GeoJSON das ciclovias"""
-    return load_local_geojson('geoportal_via_bicicleta.geojson')
 
