@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Qualidade do Ar - São Paulo</title>
+    <meta charset="utf-8">
+    {{ mapa|safe }}
+    <style>
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    {{ mapa|safe }}
+    
+    <div class="legend">
+        <h4>Legenda - Qualidade do Ar</h4>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: green;"></div>
+            <span>Boa (1)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: lightgreen;"></div>
+            <span>Razoável (2)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: orange;"></div>
+            <span>Moderada (3)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: red;"></div>
+            <span>Ruim (4)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: darkred;"></div>
+            <span>Muito Ruim (5)</span>
+        </div>
+    </div>
+
+    <script>
+    function loadStationChart(stationId) {
+        // Esta função será usada para carregar gráficos
+        fetch(`/data-process/station-data/${stationId}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Dados da estação:', data);
+                // Aqui você pode implementar a exibição de gráficos
+                alert(`Dados de ${data.station_name}\nAQI: ${data.aqi} - ${data.aqi_description}`);
+            });
+    }
+    </script>
+</body>
+</html>

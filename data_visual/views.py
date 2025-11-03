@@ -6,6 +6,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+# data_visual/views.py
+
+from data_process.models import AirQualityData
+
 #   View para mapa focado em São Paulo
 def sp_map_dashboard(request):
     """Dashboard com mapa restrito aos limites de SP"""
@@ -302,3 +306,110 @@ def add_station_data(map_object):
         
         marker.add_to(map_object)
 
+
+#! data_process child
+
+def add_station_data(map_object):
+    """Adiciona marcadores com dados reais da API"""
+    # Buscar os dados mais recentes de todas as estações
+    stations_data = []
+    for station_id in range(1, 23):  # Assumindo IDs de 1 a 22
+        try:
+            data = AirQualityData.objects.filter(
+                station_id=str(station_id)
+            ).latest('timestamp')
+            stations_data.append(data)
+        except AirQualityData.DoesNotExist:
+            # Se não tiver dados, usar dados padrão
+            continue
+    
+    # Coordenadas das estações (mantenha suas coordenadas originais)
+    coordenadas_estacoes = {
+        '1': [-23.50455587377614, -46.62856773359203],
+        '2': [-23.65452312102595, -46.70995648887296],
+        '3': [-23.545735329390677, -46.62765280792035],
+        '4': [-23.615943617970945, -46.663295450971994],
+        '5': [-23.585792325197616, -46.658413146546586],
+        '6': [-23.515542173706905, -46.72656563120576],
+        '7': [-23.549287355222415, -46.60148160421932],
+        '8': [-23.55391441958687, -46.67298963305492],
+        '9': [-23.56270064684056, -46.61263985588234],
+        '10': [-23.547325518021744, -46.64207690421932],
+        '11': [-23.566121466158865, -46.73809550680783],
+        '12': [-23.47753959549242, -46.692138309772915],
+        '13': [-23.58234192392213, -46.47046700421834],
+        '14': [-23.77645628706186, -46.69677564469008],
+        '15': [-23.560924449393774, -46.70153337538319],
+        '16': [-23.49890019033872, -46.4450417772355],
+        '17': [-23.680711167687296, -46.67579978588038],
+        '18': [-23.501541879266153, -46.42067224654922],
+        '19': [-23.666353022636017, -46.7810391597671],
+        '20': [-23.518761440588285, -46.744062190727675],
+        '21': [-23.457931652360394, -46.76675231176519],
+        '22': [-23.41485503641999, -46.75647394840244],
+        # ... adicione todas as outras
+    }
+    
+    for data in stations_data:
+        coords = coordenadas_estacoes.get(data.station_id)
+        if not coords:
+            continue
+            
+        aqi_color = data.get_aqi_color()
+        aqi_description = data.get_aqi_description()
+        
+        # Criar popup com dados reais
+        popup_html = f'''
+        <div style="min-width: 200px;">
+            <h4 style="margin: 0 0 10px 0; color: #333;">{data.station_name}</h4>
+            <div style="background-color: {aqi_color}; color: white; padding: 5px; border-radius: 3px; text-align: center; margin-bottom: 10px;">
+                <strong>AQI: {data.aqi} - {aqi_description}</strong>
+            </div>
+            <table style="width: 100%; font-size: 12px;">
+                <tr><td>PM2.5:</td><td><strong>{data.pm2_5:.1f} µg/m³</strong></td></tr>
+                <tr><td>PM10:</td><td><strong>{data.pm10:.1f} µg/m³</strong></td></tr>
+                <tr><td>NO₂:</td><td><strong>{data.no2:.1f} µg/m³</strong></td></tr>
+                <tr><td>O₃:</td><td><strong>{data.o3:.1f} µg/m³</strong></td></tr>
+                <tr><td>CO:</td><td><strong>{data.co:.1f} µg/m³</strong></td></tr>
+            </table>
+            <button onclick="loadStationChart('{data.station_id}')" 
+                    style="width: 100%; margin-top: 10px; padding: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                Ver Gráficos
+            </button>
+        </div>
+        '''
+        
+        # Escolher ícone baseado na qualidade do ar
+        icon_type = 'info-sign' if data.aqi <= 2 else 'exclamation-sign'
+        
+        marker = folium.Marker(
+            coords,
+            popup=folium.Popup(popup_html, max_width=300),
+            tooltip=f"{data.station_name} - AQI: {data.aqi} ({aqi_description})",
+            icon=folium.Icon(color=aqi_color, icon=icon_type)
+        )
+        
+        # Adicionar propriedades customizadas
+        marker.estacao_id = data.station_id
+        marker.estacao_nome = data.station_name
+        
+        marker.add_to(map_object)
+
+def mapa_poluicao(request):
+    """View principal do mapa"""
+    # Criar mapa
+    mapa = folium.Map(
+        location=[-23.5505, -46.6333],  # Centro de São Paulo
+        zoom_start=11,
+        tiles='OpenStreetMap'
+    )
+    
+    # Adicionar marcadores com dados reais
+    add_station_data(mapa)
+    
+    # Converter mapa para HTML
+    mapa_html = mapa._repr_html_()
+    
+    return render(request, 'data_visual/mapa.html', {
+        'mapa': mapa_html
+    })
