@@ -1,5 +1,4 @@
 // Script para forçar altura do mapa
-
 function forceMapHeight() {
     // Encontrar todos os elementos possíveis do mapa
     const elements = [
@@ -35,6 +34,17 @@ function forceMapHeight() {
 // Executar múltiplas vezes
 document.addEventListener('DOMContentLoaded', forceMapHeight);
 window.addEventListener('load', forceMapHeight);
-setTimeout(forceMapHeight, 500);
-setTimeout(forceMapHeight, 1000);
 setTimeout(forceMapHeight, 2000);
+
+// Função principal para inicializar a interatividade
+function inicializarInteratividadeMapa() {
+    console.log('Inicializando interatividade do mapa...');
+    
+    // Forçar altura do mapa
+    forceMapHeight();
+    
+    // Aguardar o mapa carregar completamente
+    setTimeout(() => {
+        adicionarEventosAosMarcadores();
+    }, 2000);
+}

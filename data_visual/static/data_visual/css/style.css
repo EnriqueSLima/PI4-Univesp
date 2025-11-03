@@ -27,7 +27,7 @@ body {
 
 /* Sidebar - Gráficos (60%) */
 .sidebar {
-    width: 60%;
+    width: 60% !important;
     background: white;
     padding: 15px;
     overflow-y: auto;
@@ -40,7 +40,7 @@ body {
 
 /* Mapa (40%) - CORREÇÃO PRINCIPAL AQUI */
 .map-container {
-    width: 40%;
+    width: 40% !important;
     height: 100vh !important;
     position: relative;
 }
@@ -177,4 +177,51 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* No seu style.css */
+.estacao-info {
+    background: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+}
+
+.estacao-selecionada {
+    background: #e3f2fd;
+    border-left-color: #2196f3;
+}
+
+.estacao-detalhes p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.leaflet-popup-content button {
+    transition: background-color 0.3s;
+}
+
+.leaflet-popup-content button:hover {
+    background: #2980b9 !important;
+}
+
+/* No seu style.css */
+.leaflet-marker-icon {
+    transition: transform 0.2s ease;
+}
+
+.leaflet-marker-icon:hover {
+    transform: scale(1.1);
+}
+
+.estacao-selecionada {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }

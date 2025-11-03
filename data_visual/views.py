@@ -2,6 +2,10 @@ from django.shortcuts import render
 import folium
 from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 #   View para mapa focado em São Paulo
 def sp_map_dashboard(request):
     """Dashboard com mapa restrito aos limites de SP"""
@@ -81,15 +85,12 @@ def sp_map_dashboard(request):
     # Adiciona estações de medição
     add_station_data(sp_map)
 
-    # Calcular estatísticas
-    estatisticas = calcular_estatisticas()
 
     map_html = sp_map._repr_html_()
 
     context = {
         'map_html': map_html,
-        'title': 'Dashboard SP - Análise de Dados',
-        'estatisticas': estatisticas
+        'title': '',
     }
     
     return render(request, 'visualization/dashboard.html', context)
@@ -250,65 +251,54 @@ def get_feature_properties(geojson_data):
     first_feature = geojson_data['features'][0]
     return first_feature.get('properties', {})
 
-#   Função para adicionar marcadores simples
+# Função para adicionar marcadores simples
 def add_station_data(map_object):
     """Adiciona alguns marcadores com estações de medição"""
     pontos_referencia = [
-        ([-23.50455587377614, -46.62856773359203], 'Santana', 'blue', 'star', 'Estação de medição.'),
-        ([-23.65452312102595, -46.70995648887296], 'Santo Amaro', 'blue', 'star', 'Estação de medição.'),
-        ([-23.545735329390677, -46.62765280792035], 'Pq. Dom Pedro II', 'blue', 'star', 'Estação de medição.'),
-        ([-23.615943617970945, -46.663295450971994], 'Congonhas', 'blue', 'star', 'Estação de medição.'),
-        ([-23.585792325197616, -46.658413146546586], 'Ibirapuera', 'blue', 'star', 'Estação de medição.'),
-        ([-23.515542173706905, -46.72656563120576], 'Lapa', 'blue', 'star', 'Estação de medição.'),
-        ([-23.549287355222415, -46.60148160421932], 'Mooca', 'blue', 'star', 'Estação de medição.'),
-        ([-23.55391441958687, -46.67298963305492], 'Cerqueira César', 'blue', 'star', 'Estação de medição.'),
-        ([-23.56270064684056, -46.61263985588234], 'Cambuci', 'blue', 'star', 'Estação de medição.'),
-        ([-23.547325518021744, -46.64207690421932], 'Centro', 'blue', 'star', 'Estação de medição.'),
-        ([-23.566121466158865, -46.73809550680783], 'Cid.Universitária-USP-Ipen', 'blue', 'star', 'Estação de medição.'),
-        ([-23.47753959549242, -46.692138309772915], 'N.Senhora do Ó', 'blue', 'star', 'Estação de medição.'),
-        ([-23.58234192392213, -46.47046700421834], 'Itaquera', 'blue', 'star', 'Estação de medição.'),
-        ([-23.77645628706186, -46.69677564469008], 'Grajaú-Parelheiros', 'blue', 'star', 'Estação de medição.'),
-        ([-23.560924449393774, -46.70153337538319], 'Pinheiros', 'blue', 'star', 'Estação de medição.'),
-        ([-23.49890019033872, -46.4450417772355], 'S Miguel Paulista', 'blue', 'star', 'Estação de medição.'),
-        ([-23.680711167687296, -46.67579978588038], 'Interlagos', 'blue', 'star', 'Estação de medição.'),
-        ([-23.501541879266153, -46.42067224654922], 'Itaim Paulista', 'blue', 'star', 'Estação de medição.'),
-        ([-23.666353022636017, -46.7810391597671], 'Capão Redondo', 'blue', 'star', 'Estação de medição.'),
-        ([-23.518761440588285, -46.744062190727675], 'Marg.Tietê-Pte Remédios', 'blue', 'star', 'Estação de medição.'),
-        ([-23.457931652360394, -46.76675231176519], 'Pico do Jaraguá', 'blue', 'star', 'Estação de medição.'),
-        ([-23.41485503641999, -46.75647394840244], 'Perus', 'blue', 'star', 'Estação de medição.'),
+        ([-23.50455587377614, -46.62856773359203], 'Santana',  'green', 'leaf', 'Estação de medição.', '1'),
+        ([-23.65452312102595, -46.70995648887296], 'Santo Amaro', 'green', 'leaf', 'Estação de medição.', '2'),
+        ([-23.545735329390677, -46.62765280792035], 'Pq. Dom Pedro II',  'green', 'leaf', 'Estação de medição.', '3'),
+        ([-23.615943617970945, -46.663295450971994], 'Congonhas',  'green', 'leaf', 'Estação de medição.', '4'),
+        ([-23.585792325197616, -46.658413146546586], 'Ibirapuera',  'green', 'leaf', 'Estação de medição.', '5'),
+        ([-23.515542173706905, -46.72656563120576], 'Lapa',  'green', 'leaf', 'Estação de medição.', '6'),
+        ([-23.549287355222415, -46.60148160421932], 'Mooca',  'green', 'leaf', 'Estação de medição.', '7'),
+        ([-23.55391441958687, -46.67298963305492], 'Cerqueira César',  'green', 'leaf', 'Estação de medição.', '8'),
+        ([-23.56270064684056, -46.61263985588234], 'Cambuci',  'green', 'leaf', 'Estação de medição.', '9'),
+        ([-23.547325518021744, -46.64207690421932], 'Centro',  'green', 'leaf', 'Estação de medição.', '10'),
+        ([-23.566121466158865, -46.73809550680783], 'Cid.Universitária-USP-Ipen',  'green', 'leaf', 'Estação de medição.', '11'),
+        ([-23.47753959549242, -46.692138309772915], 'N.Senhora do Ó',  'green', 'leaf', 'Estação de medição.', '12'),
+        ([-23.58234192392213, -46.47046700421834], 'Itaquera',  'green', 'leaf', 'Estação de medição.', '13'),
+        ([-23.77645628706186, -46.69677564469008], 'Grajaú-Parelheiros',  'green', 'leaf', 'Estação de medição.', '14'),
+        ([-23.560924449393774, -46.70153337538319], 'Pinheiros',  'green', 'leaf', 'Estação de medição.', '15'),
+        ([-23.49890019033872, -46.4450417772355], 'S Miguel Paulista',  'green', 'leaf', 'Estação de medição.', '16'),
+        ([-23.680711167687296, -46.67579978588038], 'Interlagos',  'green', 'leaf', 'Estação de medição.', '17'),
+        ([-23.501541879266153, -46.42067224654922], 'Itaim Paulista',  'green', 'leaf', 'Estação de medição.', '18'),
+        ([-23.666353022636017, -46.7810391597671], 'Capão Redondo',  'green', 'leaf', 'Estação de medição.', '19'),
+        ([-23.518761440588285, -46.744062190727675], 'Marg.Tietê-Pte Remédios',  'green', 'leaf', 'Estação de medição.', '20'),
+        ([-23.457931652360394, -46.76675231176519], 'Pico do Jaraguá',  'green', 'leaf', 'Estação de medição.', '21'),
+        ([-23.41485503641999, -46.75647394840244], 'Perus',  'green', 'leaf', 'Estação de medição.', '22'),
     ]
     
-    for coords, nome, cor, icone, descricao in pontos_referencia:
-        folium.Marker(
+    for coords, nome, cor, icone, descricao, estacao_id in pontos_referencia:
+        # Criar popup com link que pode ser capturado pelo evento de clique do marcador
+        popup_html = f'''
+        <div>
+            <b>{nome}</b><br>
+            {descricao}<br>
+            <button>Ver Dados</button>
+        </div>
+        '''
+        
+        marker = folium.Marker(
             coords,
-            popup=f'<b>{nome}</b><br>{descricao}',
-            tooltip=nome,
+            popup=folium.Popup(popup_html, max_width=300),
+            tooltip=f"Clique para ver dados de {nome}",
             icon=folium.Icon(color=cor, icon=icone)
-        ).add_to(map_object)
+        )
+        
+        # Adicionar propriedade customizada ao marcador
+        marker.estacao_id = estacao_id
+        marker.estacao_nome = nome
+        
+        marker.add_to(map_object)
 
-#! Cálculos estatísticos
-def calcular_estatisticas():
-    """Calcula estatísticas reais dos dados"""
-    try:
-        distritos_data = get_distritos_sp()
-        ciclovias_data = get_ciclovias_sp()
-        
-        # Estatísticas básicas
-        estatisticas = {
-            'total_ciclovias': len(ciclovias_data.get('features', [])) if ciclovias_data else 0,
-            'total_distritos': len(distritos_data.get('features', [])) if distritos_data else 0,
-            'total_subprefeituras': 32,  # Fixo para SP
-        }
-        
-        # Aqui você pode adicionar cálculos mais complexos
-        # como distribuição por região, tipos de ciclovia, etc.
-        
-        return estatisticas
-        
-    except Exception as e:
-        print(f"Erro ao calcular estatísticas: {e}")
-        return {
-            'total_ciclovias': 0,
-            'total_distritos': 0,
-            'total_subprefeituras': 0
-        }
