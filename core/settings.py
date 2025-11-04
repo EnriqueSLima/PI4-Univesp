@@ -3,9 +3,9 @@ Django settings for core project.
 """
 
 from pathlib import Path
-import dj_database_url
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 # Carrega variáveis do arquivo .env
 load_dotenv()
