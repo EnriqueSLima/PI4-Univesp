@@ -18,9 +18,22 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+
+# View simples para teste
+def home(request):
+    return HttpResponse("""
+    <h1>🚀 Django no Railway - Deploy Bem Sucedido!</h1>
+    <p>Sua aplicação está online e funcionando!</p>
+    <ul>
+        <li><a href="/admin/">Admin Django</a></li>
+        <li><a href="/api/health/">Health Check</a></li>
+    </ul>
+    """)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home, name='home'),
     path('data-process/', include('data_process.urls')),
     path('', include('data_visual.urls')),
 ]
