@@ -2,11 +2,11 @@ asgiref==3.10.0
 branca==0.8.2
 certifi==2025.8.3
 charset-normalizer==3.4.3
-dj-database-url==3.0.1
-Django==5.2.7
+dj-database-url==1.2.0
+Django==3.2.19
 folium==0.20.0
 geopandas==1.1.1
-gunicorn==23.0.0
+gunicorn==21.2.0
 idna==3.10
 Jinja2==3.1.6
 joblib==1.5.2
@@ -16,12 +16,12 @@ packaging==25.0
 pandas==2.3.3
 pillow==11.3.0
 pip-check==3.2.1
-psycopg2-binary==2.9.11
+psycopg2-binary==2.9.7
 pyogrio==0.11.1
 pyparsing==3.2.4
 pyproj==3.7.2
 python-dateutil==2.9.0.post0
-python-dotenv==1.2.1
+python-dotenv==1.0.0
 pytz==2025.2
 requests==2.32.5
 scipy==1.16.2
@@ -31,5 +31,5 @@ sqlparse==0.5.3
 threadpoolctl==3.6.0
 tzdata==2025.2
 urllib3==2.5.0
-whitenoise==6.11.0
+whitenoise==6.5.0
 xyzservices==2025.10.0
