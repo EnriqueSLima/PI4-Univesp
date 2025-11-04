@@ -91,7 +91,6 @@ def sp_map_dashboard(request):
     # Adiciona estações de medição
     add_station_data(sp_map)
 
-
     map_html = sp_map._repr_html_()
 
     context = {
@@ -393,39 +392,6 @@ def add_station_data(map_object):
         marker.estacao_nome = data.station_name
         
         marker.add_to(map_object)
-
-#def get_estacao_data(request, station_id):
-#    """API para dados de uma estação específica - últimos 7 dias"""
-#    try:
-#        # Últimos 7 dias
-#        data_inicio = datetime.now() - timedelta(days=7)
-#        
-#        dados = AirQualityData.objects.filter(
-#            station_id=station_id,
-#            timestamp__gte=data_inicio
-#        ).order_by('timestamp')
-#        
-#        dados_json = []
-#        for dado in dados:
-#            dados_json.append({
-#                'timestamp': dado.timestamp.isoformat(),
-#                'aqi': dado.aqi,
-#                'pm2_5': dado.pm2_5,
-#                'pm10': dado.pm10,
-#                'no2': dado.no2,
-#                'o3': dado.o3,
-#                'so2': dado.so2,
-#                'co': dado.co,
-#            })
-#        
-#        return JsonResponse({
-#            'success': True,
-#            'station_name': dados[0].station_name if dados else 'Estação',
-#            'dados': dados_json
-#        })
-#    
-#    except Exception as e:
-#        return JsonResponse({'success': False, 'error': str(e)})
 
 def get_dados_dia(request, station_id):
     """API para dados do dia atual"""
