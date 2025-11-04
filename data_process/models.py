@@ -19,13 +19,17 @@ class AirQualityData(models.Model):
     pm10 = models.FloatField()   # Material Particulado 10
     nh3 = models.FloatField()    # Amônia
     
-    timestamp = models.DateTimeField(auto_now_add=True)
+    # MUDE ISTO: remova auto_now_add=True e use o timestamp real
+    timestamp = models.DateTimeField()  # Data real da medição da API
+    created_at = models.DateTimeField(auto_now_add=True)  # Data da coleta
     
     class Meta:
         ordering = ['-timestamp']
+        # Adicione unique_together para evitar duplicatas
+        unique_together = ['station_id', 'timestamp']
     
     def __str__(self):
-        return f"{self.station_name} - AQI: {self.aqi}"
+        return f"{self.station_name} - {self.timestamp.strftime('%d/%m/%Y %H:%M')} - AQI: {self.aqi}"
     
     def get_aqi_description(self):
         """Retorna a descrição do índice de qualidade do ar"""
