@@ -13,6 +13,7 @@ class DashboardCharts {
     }
 
     setupEventListeners() {
+        // Event listener para seleção de estação
         document.getElementById('station-select').addEventListener('change', (e) => {
             this.currentStationId = e.target.value;
             if (this.currentStationId) {
@@ -23,59 +24,8 @@ class DashboardCharts {
         });
     }
 
-    async loadStationData(stationId) {
-        try {
-            const response = await fetch(`/api/estacao/${stationId}/`);
-            const data = await response.json();
-            
-            if (data.success) {
-                console.log('Dados recebidos:', data.dados); // DEBUG
-                this.analyzeDataStructure(data.dados); // DEBUG
-                this.updateCurrentIndicators(data.dados);
-                this.update24hChart(data.dados);
-                this.update7dChart(data.dados);
-            }
-        } catch (error) {
-            console.error('Erro ao carregar dados da estação:', error);
-        }
-    }
-
-    // Função para analisar a estrutura dos dados
-    analyzeDataStructure(dados) {
-        if (dados.length === 0) {
-            console.log('Nenhum dado disponível');
-            return;
-        }
-
-        console.log('=== ANÁLISE DOS DADOS ===');
-        console.log('Total de registros:', dados.length);
-        
-        // Verificar período dos dados
-        const timestamps = dados.map(d => new Date(d.timestamp));
-        const minDate = new Date(Math.min(...timestamps));
-        const maxDate = new Date(Math.max(...timestamps));
-        console.log('Período:', minDate.toLocaleString(), 'até', maxDate.toLocaleString());
-        
-        // Verificar frequência dos dados
-        const timeDiffs = [];
-        for (let i = 1; i < timestamps.length; i++) {
-            const diff = (timestamps[i] - timestamps[i-1]) / (1000 * 60); // diferença em minutos
-            timeDiffs.push(diff);
-        }
-        
-        if (timeDiffs.length > 0) {
-            const avgDiff = timeDiffs.reduce((a, b) => a + b) / timeDiffs.length;
-            console.log('Frequência média (minutos):', avgDiff.toFixed(1));
-        }
-        
-        // Verificar campos disponíveis
-        const sample = dados[0];
-        console.log('Campos disponíveis:', Object.keys(sample));
-        console.log('=== FIM DA ANÁLISE ===');
-    }
-
     initCharts() {
-        // Gráfico das últimas 24 horas - MAIS FLEXÍVEL
+        // Gráfico das últimas 24 horas
         const ctx24h = document.getElementById('grafico-24h').getContext('2d');
         this.charts.grafico24h = new Chart(ctx24h, {
             type: 'line',
@@ -88,9 +38,8 @@ class DashboardCharts {
                         borderColor: '#FF6384',
                         backgroundColor: 'rgba(255, 99, 132, 0.1)',
                         tension: 0.4,
-                        fill: false,
-                        borderWidth: 2,
-                        pointRadius: 3
+                        fill: true,
+                        borderWidth: 2
                     },
                     {
                         label: 'PM10',
@@ -98,9 +47,8 @@ class DashboardCharts {
                         borderColor: '#36A2EB',
                         backgroundColor: 'rgba(54, 162, 235, 0.1)',
                         tension: 0.4,
-                        fill: false,
-                        borderWidth: 2,
-                        pointRadius: 3
+                        fill: true,
+                        borderWidth: 2
                     },
                     {
                         label: 'NO₂',
@@ -108,9 +56,35 @@ class DashboardCharts {
                         borderColor: '#FFCE56',
                         backgroundColor: 'rgba(255, 206, 86, 0.1)',
                         tension: 0.4,
-                        fill: false,
-                        borderWidth: 2,
-                        pointRadius: 3
+                        fill: true,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'O₃',
+                        data: [],
+                        borderColor: '#4BC0C0',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'SO₂',
+                        data: [],
+                        borderColor: '#9966FF',
+                        backgroundColor: 'rgba(153, 102, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'CO',
+                        data: [],
+                        borderColor: '#FF9F40',
+                        backgroundColor: 'rgba(255, 159, 64, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2
                     }
                 ]
             },
@@ -120,14 +94,10 @@ class DashboardCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Variação dos Poluentes (Últimas 24h)'
+                        text: 'Variação dos Poluentes (24h)'
                     },
                     legend: {
                         position: 'top',
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false
                     }
                 },
                 scales: {
@@ -141,14 +111,14 @@ class DashboardCharts {
                     x: {
                         title: {
                             display: true,
-                            text: 'Tempo'
+                            text: 'Horário'
                         }
                     }
                 }
             }
         });
 
-        // Gráfico dos últimos 7 dias - MÉDIAS DIÁRIAS
+        // Gráfico dos últimos 7 dias - TODOS OS PARÂMETROS COMO LINHAS
         const ctx7d = document.getElementById('grafico-7dias').getContext('2d');
         this.charts.grafico7dias = new Chart(ctx7d, {
             type: 'line',
@@ -166,7 +136,7 @@ class DashboardCharts {
                         yAxisID: 'y'
                     },
                     {
-                        label: 'PM2.5 Médio',
+                        label: 'PM2.5',
                         data: [],
                         borderColor: '#FF6384',
                         backgroundColor: 'rgba(255, 99, 132, 0.1)',
@@ -176,10 +146,50 @@ class DashboardCharts {
                         yAxisID: 'y1'
                     },
                     {
-                        label: 'PM10 Médio',
+                        label: 'PM10',
                         data: [],
                         borderColor: '#36A2EB',
                         backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'NO₂',
+                        data: [],
+                        borderColor: '#FFCE56',
+                        backgroundColor: 'rgba(255, 206, 86, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'O₃',
+                        data: [],
+                        borderColor: '#4BC0C0',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'SO₂',
+                        data: [],
+                        borderColor: '#9966FF',
+                        backgroundColor: 'rgba(153, 102, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'CO',
+                        data: [],
+                        borderColor: '#FF9F40',
+                        backgroundColor: 'rgba(255, 159, 64, 0.1)',
                         borderWidth: 2,
                         fill: false,
                         tension: 0.4,
@@ -193,7 +203,7 @@ class DashboardCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Tendência Semanal - Médias Diárias'
+                        text: 'Tendência Semanal - Todos os Parâmetros'
                     },
                     legend: {
                         position: 'top',
@@ -252,11 +262,24 @@ class DashboardCharts {
         }
     }
 
-    updateCurrentIndicators(dados) {
-        if (dados.length === 0) {
-            this.clearIndicators();
-            return;
+    async loadStationData(stationId) {
+        try {
+            // Carrega dados dos últimos 7 dias
+            const response = await fetch(`/api/estacao/${stationId}/`);
+            const data = await response.json();
+            
+            if (data.success) {
+                this.updateCurrentIndicators(data.dados);
+                this.update24hChart(data.dados);
+                this.update7dChart(data.dados);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados da estação:', error);
         }
+    }
+
+    updateCurrentIndicators(dados) {
+        if (dados.length === 0) return;
 
         // Pega o dado mais recente
         const latest = dados[dados.length - 1];
@@ -306,12 +329,7 @@ class DashboardCharts {
     }
 
     update24hChart(dados) {
-        if (dados.length === 0) {
-            this.clearChart24h();
-            return;
-        }
-
-        // Pega dados das últimas 24 horas
+        // Filtra dados das últimas 24 horas
         const now = new Date();
         const twentyFourHoursAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
         
@@ -320,112 +338,34 @@ class DashboardCharts {
             return date >= twentyFourHoursAgo;
         });
 
-        console.log('Dados das últimas 24h:', last24h.length, 'registros'); // DEBUG
+        const labels = last24h.map(dado => {
+            const date = new Date(dado.timestamp);
+            return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        });
 
-        if (last24h.length === 0) {
-            // Se não há dados das últimas 24h, usa os últimos dados disponíveis (máx 10)
-            const recentData = dados.slice(-10);
-            this.updateChartWithAvailableData(this.charts.grafico24h, recentData, 'Dados Recentes Disponíveis');
-            return;
-        }
-
-        // Formata labels baseado na frequência dos dados
-        const labels = this.formatLabelsBasedOnFrequency(last24h);
-        
-        const pm25Data = last24h.map(dado => dado.pm2_5 || 0);
-        const pm10Data = last24h.map(dado => dado.pm10 || 0);
-        const no2Data = last24h.map(dado => dado.no2 || 0);
+        const pm25Data = last24h.map(dado => dado.pm2_5);
+        const pm10Data = last24h.map(dado => dado.pm10);
+        const no2Data = last24h.map(dado => dado.no2);
+        const o3Data = last24h.map(dado => dado.o3);
+        const so2Data = last24h.map(dado => dado.so2);
+        const coData = last24h.map(dado => dado.co);
 
         this.charts.grafico24h.data.labels = labels;
         this.charts.grafico24h.data.datasets[0].data = pm25Data;
         this.charts.grafico24h.data.datasets[1].data = pm10Data;
         this.charts.grafico24h.data.datasets[2].data = no2Data;
-        
-        // Atualiza título baseado nos dados disponíveis
-        this.charts.grafico24h.options.plugins.title.text = `Variação dos Poluentes (${last24h.length} registros)`;
-        
+        this.charts.grafico24h.data.datasets[3].data = o3Data;
+        this.charts.grafico24h.data.datasets[4].data = so2Data;
+        this.charts.grafico24h.data.datasets[5].data = coData;
         this.charts.grafico24h.update();
     }
 
     update7dChart(dados) {
-        if (dados.length === 0) {
-            this.clearChart7d();
-            return;
-        }
-
-        // Agrupa dados por dia e calcula médias
-        const dailyData = this.calculateDailyAverages(dados);
-        
-        const labels = Object.keys(dailyData).sort();
-        const aqiData = labels.map(day => dailyData[day].aqi || 0);
-        const pm25Data = labels.map(day => dailyData[day].pm25 || 0);
-        const pm10Data = labels.map(day => dailyData[day].pm10 || 0);
-
-        // Formata labels para formato mais amigável
-        const formattedLabels = labels.map(label => {
-            const date = new Date(label);
-            return date.toLocaleDateString('pt-BR', { 
-                day: '2-digit', 
-                month: '2-digit',
-                weekday: 'short'
-            });
-        });
-
-        this.charts.grafico7dias.data.labels = formattedLabels;
-        this.charts.grafico7dias.data.datasets[0].data = aqiData;
-        this.charts.grafico7dias.data.datasets[1].data = pm25Data;
-        this.charts.grafico7dias.data.datasets[2].data = pm10Data;
-        
-        // Atualiza título
-        this.charts.grafico7dias.options.plugins.title.text = `Tendência Semanal (${labels.length} dias)`;
-        
-        this.charts.grafico7dias.update();
-    }
-
-    // Função auxiliar para formatar labels baseado na frequência dos dados
-    formatLabelsBasedOnFrequency(dados) {
-        if (dados.length === 0) return [];
-        
-        if (dados.length === 1) {
-            // Apenas um ponto - mostra data completa
-            const date = new Date(dados[0].timestamp);
-            return [date.toLocaleString('pt-BR')];
-        }
-        
-        // Verifica se os dados são do mesmo dia
-        const firstDate = new Date(dados[0].timestamp);
-        const lastDate = new Date(dados[dados.length - 1].timestamp);
-        const sameDay = firstDate.toDateString() === lastDate.toDateString();
-        
-        if (sameDay && dados.length <= 6) {
-            // Poucos pontos no mesmo dia - mostra hora:minuto
-            return dados.map(dado => {
-                const date = new Date(dado.timestamp);
-                return date.toLocaleTimeString('pt-BR', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                });
-            });
-        } else {
-            // Múltiplos dias ou muitos pontos - mostra data reduzida
-            return dados.map(dado => {
-                const date = new Date(dado.timestamp);
-                return date.toLocaleDateString('pt-BR', { 
-                    day: '2-digit', 
-                    month: '2-digit',
-                    hour: '2-digit'
-                });
-            });
-        }
-    }
-
-    // Função para calcular médias diárias
-    calculateDailyAverages(dados) {
+        // Agrupa dados por dia
         const dailyData = {};
-        
         dados.forEach(dado => {
             const date = new Date(dado.timestamp);
-            const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
+            const dayKey = date.toISOString().split('T')[0];
             
             if (!dailyData[dayKey]) {
                 dailyData[dayKey] = {
@@ -448,47 +388,64 @@ class DashboardCharts {
             if (dado.co) dailyData[dayKey].co.push(dado.co);
         });
 
-        // Calcula médias
-        const result = {};
-        Object.keys(dailyData).forEach(day => {
-            result[day] = {
-                aqi: dailyData[day].aqi.length > 0 ? 
-                    dailyData[day].aqi.reduce((a, b) => a + b) / dailyData[day].aqi.length : null,
-                pm25: dailyData[day].pm25.length > 0 ? 
-                    dailyData[day].pm25.reduce((a, b) => a + b) / dailyData[day].pm25.length : null,
-                pm10: dailyData[day].pm10.length > 0 ? 
-                    dailyData[day].pm10.reduce((a, b) => a + b) / dailyData[day].pm10.length : null
-            };
+        const labels = Object.keys(dailyData).sort();
+        
+        // Calcula médias diárias para cada parâmetro
+        const aqiData = labels.map(day => {
+            const values = dailyData[day].aqi;
+            return values.length > 0 ? values.reduce((a, b) => a + b) / values.length : 0;
+        });
+        
+        const pm25Data = labels.map(day => {
+            const values = dailyData[day].pm25;
+            return values.length > 0 ? values.reduce((a, b) => a + b) / values.length : 0;
         });
 
-        return result;
-    }
-
-    // Função para atualizar gráfico com dados disponíveis
-    updateChartWithAvailableData(chart, dados, title) {
-        const labels = dados.map(dado => {
-            const date = new Date(dado.timestamp);
-            return date.toLocaleString('pt-BR', { 
-                day: '2-digit',
-                month: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+        const pm10Data = labels.map(day => {
+            const values = dailyData[day].pm10;
+            return values.length > 0 ? values.reduce((a, b) => a + b) / values.length : 0;
+        });
+        
+        const no2Data = labels.map(day => {
+            const values = dailyData[day].no2;
+            return values.length > 0 ? values.reduce((a, b) => a + b) / values.length : 0;
+        });
+        
+        const o3Data = labels.map(day => {
+            const values = dailyData[day].o3;
+            return values.length > 0 ? values.reduce((a, b) => a + b) / values.length : 0;
+        });
+        
+        const so2Data = labels.map(day => {
+            const values = dailyData[day].so2;
+            return values.length > 0 ? values.reduce((a, b) => a + b) / values.length : 0;
+        });
+        
+        const coData = labels.map(day => {
+            const values = dailyData[day].co;
+            return values.length > 0 ? values.reduce((a, b) => a + b) / values.length : 0;
         });
 
-        const pm25Data = dados.map(dado => dado.pm2_5 || 0);
-        const pm10Data = dados.map(dado => dado.pm10 || 0);
-        const no2Data = dados.map(dado => dado.no2 || 0);
+        // Formata labels para formato mais amigável
+        const formattedLabels = labels.map(label => {
+            const date = new Date(label);
+            return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        });
 
-        chart.data.labels = labels;
-        chart.data.datasets[0].data = pm25Data;
-        chart.data.datasets[1].data = pm10Data;
-        chart.data.datasets[2].data = no2Data;
-        chart.options.plugins.title.text = title;
-        chart.update();
+        // Atualiza o gráfico
+        this.charts.grafico7dias.data.labels = formattedLabels;
+        this.charts.grafico7dias.data.datasets[0].data = aqiData;
+        this.charts.grafico7dias.data.datasets[1].data = pm25Data;
+        this.charts.grafico7dias.data.datasets[2].data = pm10Data;
+        this.charts.grafico7dias.data.datasets[3].data = no2Data;
+        this.charts.grafico7dias.data.datasets[4].data = o3Data;
+        this.charts.grafico7dias.data.datasets[5].data = so2Data;
+        this.charts.grafico7dias.data.datasets[6].data = coData;
+        this.charts.grafico7dias.update();
     }
 
-    clearIndicators() {
+    clearCharts() {
+        // Limpa todos os gráficos e indicadores
         document.getElementById('current-aqi').textContent = '--';
         document.getElementById('current-pm25').textContent = '--';
         document.getElementById('current-pm10').textContent = '--';
@@ -497,26 +454,14 @@ class DashboardCharts {
         document.getElementById('current-so2').textContent = '--';
         document.getElementById('current-co').textContent = '--';
         document.getElementById('aqi-description').textContent = '--';
-    }
 
-    clearChart24h() {
         this.charts.grafico24h.data.labels = [];
         this.charts.grafico24h.data.datasets.forEach(dataset => dataset.data = []);
-        this.charts.grafico24h.options.plugins.title.text = 'Sem dados disponíveis';
         this.charts.grafico24h.update();
-    }
 
-    clearChart7d() {
         this.charts.grafico7dias.data.labels = [];
         this.charts.grafico7dias.data.datasets.forEach(dataset => dataset.data = []);
-        this.charts.grafico7dias.options.plugins.title.text = 'Sem dados disponíveis';
         this.charts.grafico7dias.update();
-    }
-
-    clearCharts() {
-        this.clearIndicators();
-        this.clearChart24h();
-        this.clearChart7d();
     }
 }
 

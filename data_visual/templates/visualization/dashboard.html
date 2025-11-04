@@ -24,53 +24,96 @@
 {% block 'sidebar' %}
     <!-- Sidebar com Gráficos -->
     <div class="sidebar">
-        <div class="dashboard-header" >
+        <div class="dashboard-header">
             <img class="logo" src="{% static 'data_visual/images/logo03.jpeg' %}" alt="Logo">
-            <h1>Qualidade do Ar - São Paulo </h1>
+            <h1>Monitore a Qualidade do Ar - São Paulo</h1>
         </div>
 
-        <!-- Estatísticas Rápidas -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <i class="fas fa-bicycle fa-2x"></i>
-                <div class="stat-number" id="ciclovias-count">--</div>
-                <div class="stat-label">Ciclovias</div>
-            </div>
+        <!-- Seletor de Estação -->
+        <div class="station-selector">
+            <label for="station-select"><i class="fas fa-map-marker-alt"></i> Selecionar Estação:</label>
+            <select id="station-select">
+                <option value="">-- Selecione uma estação --</option>
+                <option value="1">Santana</option>
+                <option value="2">Santo Amaro</option>
+                <option value="3">Pq. Dom Pedro II</option>
+                <option value="4">Congonhas</option>
+                <option value="5">Ibirapuera</option>
+                <option value="6">Lapa</option>
+                <option value="7">Mooca</option>
+                <option value="8">Cerqueira César</option>
+                <option value="9">Cambuci</option>
+                <option value="10">Centro</option>
+                <option value="11">Cid.Universitária-USP-Ipen</option>
+                <option value="12">N.Senhora do Ó</option>
+                <option value="13">Itaquera</option>
+                <option value="14">Grajaú-Parelheiros</option>
+                <option value="15">Pinheiros</option>
+                <option value="16">S Miguel Paulista</option>
+                <option value="17">Interlagos</option>
+                <option value="18">Itaim Paulista</option>
+                <option value="19">Capão Redondo</option>
+                <option value="20">Marg.Tietê-Pte Remédios</option>
+                <option value="21">Pico do Jaraguá</option>
+                <option value="22">Perus</option>
+            </select>
+        </div>
 
-            <div class="stat-card">
-                <i class="fas fa-tree fa-2x"></i>
-                <div class="stat-number" id="distritos-count">--</div>
-                <div class="stat-label">Distritos</div>
-            </div>
-
-            <div class="stat-card">
-                <i class="fas fa-building fa-2x"></i>
-                <div class="stat-number" id="subprefeituras-count">--</div>
-                <div class="stat-label">Subprefeituras</div>
+        <!-- Indicadores Atuais -->
+        <div class="current-indicators">
+            <h3><i class="fas fa-chart-line"></i> Indicadores Atuais</h3>
+            <div class="indicators-grid">
+                <div class="indicator-card aqi-indicator">
+                    <div class="indicator-label">Qualidade do Ar</div>
+                    <div class="indicator-value" id="current-aqi">--</div>
+                    <div class="indicator-description" id="aqi-description">--</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">PM2.5</div>
+                    <div class="indicator-value" id="current-pm25">--</div>
+                    <div class="indicator-unit">µg/m³</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">PM10</div>
+                    <div class="indicator-value" id="current-pm10">--</div>
+                    <div class="indicator-unit">µg/m³</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">NO₂</div>
+                    <div class="indicator-value" id="current-no2">--</div>
+                    <div class="indicator-unit">µg/m³</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">O³</div>
+                    <div class="indicator-value" id="current-o3">--</div>
+                    <div class="indicator-unit">µg/m³</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">SO²</div>
+                    <div class="indicator-value" id="current-so2">--</div>
+                    <div class="indicator-unit">µg/m³</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">CO</div>
+                    <div class="indicator-value" id="current-co">--</div>
+                    <div class="indicator-unit">µg/m³</div>
+                </div>
             </div>
         </div>
 
-        <!-- Gráfico 1: Distribuição por Zona -->
+        <!-- Gráfico das Últimas Horas -->
         <div class="chart-card">
-            <h3><i class="fas fa-chart-pie"></i> Distribuição por Região</h3>
+            <h3><i class="fas fa-chart-line"></i> Últimas 24 Horas</h3>
             <div class="chart-container">
-                <canvas id="regiaoChart"></canvas>
+                <canvas id="grafico-24h"></canvas>
             </div>
         </div>
 
-        <!-- Gráfico 2: Evolução Temporal -->
+        <!-- Gráfico dos Últimos 7 Dias -->
         <div class="chart-card">
-            <h3><i class="fas fa-chart-line"></i> Evolução de Infraestrutura</h3>
+            <h3><i class="fas fa-chart-bar"></i> Últimos 7 Dias</h3>
             <div class="chart-container">
-                <canvas id="evolucaoChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Gráfico 3: Comparação por Tipo -->
-        <div class="chart-card">
-            <h3><i class="fas fa-chart-bar"></i> Comparação por Tipo</h3>
-            <div class="chart-container">
-                <canvas id="tipoChart"></canvas>
+                <canvas id="grafico-7dias"></canvas>
             </div>
         </div>
     </div>

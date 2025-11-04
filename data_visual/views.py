@@ -1,14 +1,16 @@
-from django.shortcuts import render
+# data_visual/views.py
 import folium
-from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from datetime import datetime, timedelta
 import json
-
-# data_visual/views.py
-
+from django.http import JsonResponse
 from data_process.models import AirQualityData
+
+from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp
+
 
 #   View para mapa focado em São Paulo
 def sp_map_dashboard(request):
@@ -306,9 +308,6 @@ def add_station_data(map_object):
         
         marker.add_to(map_object)
 
-
-#! data_process child
-
 def add_station_data(map_object):
     """Adiciona marcadores com dados reais da API"""
     # Buscar os dados mais recentes de todas as estações
@@ -323,7 +322,7 @@ def add_station_data(map_object):
             # Se não tiver dados, usar dados padrão
             continue
     
-    # Coordenadas das estações (mantenha suas coordenadas originais)
+    # Coordenadas das estações
     coordenadas_estacoes = {
         '1': [-23.50455587377614, -46.62856773359203],
         '2': [-23.65452312102595, -46.70995648887296],
@@ -384,7 +383,7 @@ def add_station_data(map_object):
         
         marker = folium.Marker(
             coords,
-            popup=folium.Popup(popup_html, max_width=300),
+            #popup=folium.Popup(popup_html, max_width=300),
             tooltip=f"{data.station_name} - AQI: {data.aqi} ({aqi_description})",
             icon=folium.Icon(color=aqi_color, icon=icon_type)
         )
@@ -395,21 +394,104 @@ def add_station_data(map_object):
         
         marker.add_to(map_object)
 
-def mapa_poluicao(request):
-    """View principal do mapa"""
-    # Criar mapa
-    mapa = folium.Map(
-        location=[-23.5505, -46.6333],  # Centro de São Paulo
-        zoom_start=11,
-        tiles='OpenStreetMap'
-    )
+#def get_estacao_data(request, station_id):
+#    """API para dados de uma estação específica - últimos 7 dias"""
+#    try:
+#        # Últimos 7 dias
+#        data_inicio = datetime.now() - timedelta(days=7)
+#        
+#        dados = AirQualityData.objects.filter(
+#            station_id=station_id,
+#            timestamp__gte=data_inicio
+#        ).order_by('timestamp')
+#        
+#        dados_json = []
+#        for dado in dados:
+#            dados_json.append({
+#                'timestamp': dado.timestamp.isoformat(),
+#                'aqi': dado.aqi,
+#                'pm2_5': dado.pm2_5,
+#                'pm10': dado.pm10,
+#                'no2': dado.no2,
+#                'o3': dado.o3,
+#                'so2': dado.so2,
+#                'co': dado.co,
+#            })
+#        
+#        return JsonResponse({
+#            'success': True,
+#            'station_name': dados[0].station_name if dados else 'Estação',
+#            'dados': dados_json
+#        })
+#    
+#    except Exception as e:
+#        return JsonResponse({'success': False, 'error': str(e)})
+
+def get_dados_dia(request, station_id):
+    """API para dados do dia atual"""
+    try:
+        hoje = datetime.now().date()
+        
+        dados_hoje = AirQualityData.objects.filter(
+            station_id=station_id,
+            timestamp__date=hoje
+        ).order_by('timestamp')
+        
+        dados_json = []
+        for dado in dados_hoje:
+            dados_json.append({
+                'timestamp': dado.timestamp.isoformat(),
+                'pm2_5': dado.pm2_5,
+                'pm10': dado.pm10,
+                'no2': dado.no2,
+                'o3': dado.o3,
+                'so2': dado.so2,
+                'co': dado.co,
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'dados': dados_json
+        })
     
-    # Adicionar marcadores com dados reais
-    add_station_data(mapa)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+def get_estacao_data(request, station_id):
+    """API para dados de uma estação específica - últimos 7 dias"""
+    try:
+        # Últimos 7 dias
+        data_inicio = datetime.now() - timedelta(days=7)
+        
+        dados = AirQualityData.objects.filter(
+            station_id=station_id,
+            timestamp__gte=data_inicio
+        ).order_by('timestamp')
+        
+        # Se não houver dados dos últimos 7 dias, busca os últimos 30 registros
+        if not dados.exists():
+            dados = AirQualityData.objects.filter(
+                station_id=station_id
+            ).order_by('-timestamp')[:30]
+        
+        dados_json = []
+        for dado in dados:
+            dados_json.append({
+                'timestamp': dado.timestamp.isoformat(),
+                'aqi': dado.aqi,
+                'pm2_5': dado.pm2_5,
+                'pm10': dado.pm10,
+                'no2': dado.no2,
+                'o3': dado.o3,
+                'so2': dado.so2,
+                'co': dado.co,
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'station_name': dados[0].station_name if dados else 'Estação',
+            'dados': dados_json
+        })
     
-    # Converter mapa para HTML
-    mapa_html = mapa._repr_html_()
-    
-    return render(request, 'data_visual/mapa.html', {
-        'mapa': mapa_html
-    })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
