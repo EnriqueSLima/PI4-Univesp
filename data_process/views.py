@@ -1,10 +1,8 @@
 # data_process/views.py
-
 from django.http import JsonResponse
 from django.views import View
 from .services import OpenWeatherAirQuality
 from .models import AirQualityData
-
 from django.shortcuts import render
 
 
@@ -33,7 +31,6 @@ def get_station_coordinates():
         { 'coords': [-23.518761440588285, -46.744062190727675], 'nome' : 'Marg.Tietê-Pte Remédios', 'estacao_id': '20'},
         { 'coords': [-23.457931652360394, -46.76675231176519], 'nome' : 'Pico do Jaraguá', 'estacao_id': '21'},
         { 'coords': [-23.41485503641999, -46.75647394840244], 'nome' : 'Perus', 'estacao_id': '22'},
-        # ... adicione todas as outras estações
     ]
 
 class CollectAirQualityData(View):

@@ -8,7 +8,7 @@ class AirQualityData(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     
-    # Dados da poluição
+    # Parâmetros
     aqi = models.IntegerField()  # Índice de qualidade do ar
     co = models.FloatField()     # Monóxido de Carbono
     no = models.FloatField()     # Óxido Nítrico
@@ -19,13 +19,12 @@ class AirQualityData(models.Model):
     pm10 = models.FloatField()   # Material Particulado 10
     nh3 = models.FloatField()    # Amônia
     
-    # MUDE ISTO: remova auto_now_add=True e use o timestamp real
     timestamp = models.DateTimeField()  # Data real da medição da API
     created_at = models.DateTimeField(auto_now_add=True)  # Data da coleta
     
     class Meta:
         ordering = ['-timestamp']
-        # Adicione unique_together para evitar duplicatas
+        # unique_together para evitar duplicatas
         unique_together = ['station_id', 'timestamp']
     
     def __str__(self):

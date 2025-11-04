@@ -1,8 +1,8 @@
 # data_process/management/commands/collect_historical_all.py
-
 from django.core.management.base import BaseCommand
 from data_process.services import collect_historical_data_all_stations
 
+# Função para coletar os dados de todas as estações
 class Command(BaseCommand):
     help = 'Coleta dados históricos para TODAS as estações'
     

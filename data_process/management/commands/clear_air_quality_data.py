@@ -2,6 +2,7 @@
 from django.core.management.base import BaseCommand
 from data_process.models import AirQualityData
 
+# Função para limpar os dados do banco
 class Command(BaseCommand):
     help = 'Remove todos os dados de qualidade do ar'
 
