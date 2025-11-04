@@ -68,14 +68,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database
-#DATABASES = {
-#    'default': dj_database_url.config(
-#        default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'),
-#        conn_max_age=600
-#    )
-#}
-
 # Na seção de DATABASES, use temporariamente:
 #DATABASES = {
 #    'default': {
@@ -85,16 +77,41 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #}
 
 # Database Configuration - Versão Simplificada
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE', 'railway'),
-        'USER': os.environ.get('PGUSER', 'postgres'),
-        'PASSWORD': os.environ.get('PGPASSWORD', ''),
-        'HOST': os.environ.get('PGHOST', 'localhost'),
-        'PORT': os.environ.get('PGPORT', '5432'),
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': os.environ.get('PGDATABASE', 'railway'),
+#        'USER': os.environ.get('PGUSER', 'postgres'),
+#        'PASSWORD': os.environ.get('PGPASSWORD', ''),
+#        'HOST': os.environ.get('PGHOST', 'localhost'),
+#        'PORT': os.environ.get('PGPORT', '5432'),
+#    }
+#}
+
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
     }
-}
+else:
+    # Desenvolvimento local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+# Database
+#DATABASES = {
+#    'default': dj_database_url.config(
+#        default=os.environ.get('DATABASE_URL'),
+#        conn_max_age=600,
+#        ssl_require=True
+#    )
+#}
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
