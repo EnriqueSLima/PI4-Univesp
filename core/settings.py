@@ -84,6 +84,21 @@ DATABASES = {
     }
 }
 
+## Adicione esta configuração do PostgreSQL:
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'air_quality_db',
+#        'USER': 'air_user',
+#        'PASSWORD': 'sua_senha_segura',  # Use a mesma senha que criou
+#        'HOST': 'localhost',
+#        'PORT': '5432',
+#    }
+#}
+#
+## Adicione também no final do settings.py para maior compatibilidade:
+#DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -129,3 +144,11 @@ STATICFILES_DIRS = [BASE_DIR / "data_visual/static"]
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# API key
+
+#OPENWEATHER_API_KEY = 'b50f739e34bbd6d12a2ef20dd42766b4'
+
+OPENWEATHER_API_KEY = '2251de6cabcf4567a02bb061e8f81dc2'
+
+#http://api.openweathermap.org/data/2.5/air_pollution/history?lat=-23.50455&lon=-46.62856&start=1606223802&end=1606482999&appid=2251de6cabcf4567a02bb061e8f81dc2
