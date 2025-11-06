@@ -88,6 +88,8 @@ def sp_map_dashboard(request):
     add_subprefeituras_layer(sp_map)
     # Adiciona controles de camadas
     folium.LayerControl().add_to(sp_map)
+    # Adiciona marcadores estações de medição
+    add_station_marker(sp_map)
     # Adiciona estações de medição
     add_station_data(sp_map)
 
@@ -257,7 +259,7 @@ def get_feature_properties(geojson_data):
     return first_feature.get('properties', {})
 
 # Função para adicionar marcadores simples
-def add_station_data(map_object):
+def add_station_marker(map_object):
     """Adiciona alguns marcadores com estações de medição"""
     pontos_referencia = [
         ([-23.50455587377614, -46.62856773359203], 'Santana',  'green', 'leaf', 'Estação de medição.', '1'),
