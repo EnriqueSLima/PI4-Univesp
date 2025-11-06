@@ -292,7 +292,6 @@ def add_station_marker(map_object):
         <div>
             <b>{nome}</b><br>
             {descricao}<br>
-            <button>Ver Dados</button>
         </div>
         '''
         
@@ -386,7 +385,7 @@ def add_station_data(map_object):
             coords,
             #popup=folium.Popup(popup_html, max_width=300),
             tooltip=f"{data.station_name} - AQI: {data.aqi} ({aqi_description})",
-            icon=folium.Icon(color=aqi_color, icon=icon_type)
+            icon=folium.Icon(color=aqi_color, icon=icon)
         )
         
         # Adicionar propriedades customizadas
