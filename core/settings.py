@@ -127,3 +127,5 @@ STATICFILES_DIRS = [BASE_DIR / "data_visual/static"]
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+OPENWEATHER_API_KEY = '2251de6cabcf4567a02bb061e8f81dc2'
