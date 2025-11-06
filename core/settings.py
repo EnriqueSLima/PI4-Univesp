@@ -68,29 +68,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-## Database
-#DATABASES = {
-#    'default': dj_database_url.config(
-#        default=os.environ.get('DATABASE_URL'),
-#        conn_max_age=600,
-#        ssl_require=True
-#    )
-#}
-
-DATABASE_URL = os.environ.get('DATABASE_URL', '')
-
-# Se estiver usando a URL interna do Railway, converter para externa
-if 'railway.internal' in DATABASE_URL:
-    DATABASE_URL = DATABASE_URL.replace('railway.internal', 'railway.app')
-    DATABASE_URL = DATABASE_URL.replace('5432', '7683')  # Porta externa comum
-
+# Database
 DATABASES = {
     'default': dj_database_url.config(
-        default=DATABASE_URL,
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
-        conn_health_checks=True,
+        ssl_require=True
     )
 }
+
+#DATABASE_URL = os.environ.get('DATABASE_URL', '')
+#
+## Se estiver usando a URL interna do Railway, converter para externa
+#if 'railway.internal' in DATABASE_URL:
+#    DATABASE_URL = DATABASE_URL.replace('railway.internal', 'railway.app')
+#    DATABASE_URL = DATABASE_URL.replace('5432', '7683')  # Porta externa comum
+#
+#DATABASES = {
+#    'default': dj_database_url.config(
+#        default=DATABASE_URL,
+#        conn_max_age=600,
+#        conn_health_checks=True,
+#    )
+#}
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
