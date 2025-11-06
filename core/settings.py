@@ -68,48 +68,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Na seção de DATABASES, use temporariamente:
+## Database
 #DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
+#    'default': dj_database_url.config(
+#        default=os.environ.get('DATABASE_URL'),
+#        conn_max_age=600,
+#        ssl_require=True
+#    )
 #}
 
-# Database Configuration - Versão Simplificada
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': os.environ.get('PGDATABASE', 'railway'),
-#        'USER': os.environ.get('PGUSER', 'postgres'),
-#        'PASSWORD': os.environ.get('PGPASSWORD', ''),
-#        'HOST': os.environ.get('PGHOST', 'localhost'),
-#        'PORT': os.environ.get('PGPORT', '5432'),
-#    }
-#}
+DATABASE_URL = os.environ.get('DATABASE_URL', '')
 
+# Se estiver usando a URL interna do Railway, converter para externa
+if 'railway.internal' in DATABASE_URL:
+    DATABASE_URL = DATABASE_URL.replace('railway.internal', 'railway.app')
+    DATABASE_URL = DATABASE_URL.replace('5432', '7683')  # Porta externa comum
 
-#DATABASE_URL = os.environ.get('DATABASE_URL')
-#
-#if DATABASE_URL:
-#    DATABASES = {
-#        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
-#    }
-#else:
-#    # Desenvolvimento local
-#    DATABASES = {
-#        'default': {
-#            'ENGINE': 'django.db.backends.sqlite3',
-#            'NAME': BASE_DIR / 'db.sqlite3',
-#        }
-#    }
-
-# Database
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
+        default=DATABASE_URL,
         conn_max_age=600,
-        ssl_require=True
+        conn_health_checks=True,
     )
 }
 
