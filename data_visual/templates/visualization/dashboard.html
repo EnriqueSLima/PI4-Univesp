@@ -60,58 +60,71 @@
         </div>
 
         <!-- Indicadores Atuais -->
+        
         <div class="current-indicators">
-            <h3><i class="fas fa-chart-line"></i> Indicadores Atuais</h3>
-            <div class="indicators-grid">
-                <div class="indicator-card aqi-indicator">
-                    <div class="indicator-label">Qualidade do Ar</div>
-                    <div class="indicator-value" id="current-aqi">--</div>
-                    <div class="indicator-description" id="aqi-description">--</div>
+            <h3><i class="fas fa-chart-line"></i> Indicadores Atuais </h3>
+            <div class='indicadores'>
+                <div>
+                    TEXTO
                 </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">PM2.5</div>
-                    <div class="indicator-value" id="current-pm25">--</div>
-                    <div class="indicator-unit">µg/m³</div>
-                </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">PM10</div>
-                    <div class="indicator-value" id="current-pm10">--</div>
-                    <div class="indicator-unit">µg/m³</div>
-                </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">NO₂</div>
-                    <div class="indicator-value" id="current-no2">--</div>
-                    <div class="indicator-unit">µg/m³</div>
-                </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">O³</div>
-                    <div class="indicator-value" id="current-o3">--</div>
-                    <div class="indicator-unit">µg/m³</div>
-                </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">SO²</div>
-                    <div class="indicator-value" id="current-so2">--</div>
-                    <div class="indicator-unit">µg/m³</div>
-                </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">CO</div>
-                    <div class="indicator-value" id="current-co">--</div>
-                    <div class="indicator-unit">µg/m³</div>
+
+                <div class="indicators-grid">
+                    <div class="indicator-card aqi-indicator">
+                        <div class="indicator-label">Qualidade do Ar</div>
+                        <div class="indicator-value" id="current-aqi">--</div>
+                        <div class="indicator-description" id="aqi-description">--</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">PM2.5</div>
+                        <div class="indicator-value" id="current-pm25">--</div>
+                        <div class="indicator-unit">µg/m³</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">PM10</div>
+                        <div class="indicator-value" id="current-pm10">--</div>
+                        <div class="indicator-unit">µg/m³</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">NO₂</div>
+                        <div class="indicator-value" id="current-no2">--</div>
+                        <div class="indicator-unit">µg/m³</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">O³</div>
+                        <div class="indicator-value" id="current-o3">--</div>
+                        <div class="indicator-unit">µg/m³</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">SO²</div>
+                        <div class="indicator-value" id="current-so2">--</div>
+                        <div class="indicator-unit">µg/m³</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">CO</div>
+                        <div class="indicator-value" id="current-co">--</div>
+                        <div class="indicator-unit">µg/m³</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Gráfico das Últimas Horas -->
         <div class="chart-card">
-            <h3><i class="fas fa-chart-line"></i> Últimas 24 Horas</h3>
+            <h3><i class="fas fa-chart-line"></i> Dados do dia</h3>
             <div class="chart-container">
-                <canvas id="grafico-24h"></canvas>
+                <canvas id="particulas-24h"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="gases-24h"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="gasesb-24h"></canvas>
             </div>
         </div>
 
         <!-- Gráfico dos Últimos 7 Dias -->
         <div class="chart-card">
-            <h3><i class="fas fa-chart-bar"></i> Últimos 7 Dias</h3>
+            <h3><i class="fas fa-chart-bar"></i> Dados da Semana</h3>
             <div class="chart-container">
                 <canvas id="grafico-7dias"></canvas>
             </div>

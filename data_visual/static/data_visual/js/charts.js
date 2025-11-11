@@ -76,8 +76,8 @@ class DashboardCharts {
 
     initCharts() {
         // Gráfico das últimas 24 horas - MAIS FLEXÍVEL
-        const ctx24h = document.getElementById('grafico-24h').getContext('2d');
-        this.charts.grafico24h = new Chart(ctx24h, {
+        const particulas24h = document.getElementById('particulas-24h').getContext('2d');
+        this.charts.particulas24h = new Chart(particulas24h, {
             type: 'line',
             data: {
                 labels: [],
@@ -85,33 +85,23 @@ class DashboardCharts {
                     {
                         label: 'PM2.5',
                         data: [],
-                        borderColor: '#FF6384',
+                        borderColor: 'lightgray',
                         backgroundColor: 'rgba(255, 99, 132, 0.1)',
                         tension: 0.4,
-                        fill: false,
+                        fill: true,
                         borderWidth: 2,
                         pointRadius: 3
                     },
                     {
                         label: 'PM10',
                         data: [],
-                        borderColor: '#36A2EB',
+                        borderColor: 'darkgray',
                         backgroundColor: 'rgba(54, 162, 235, 0.1)',
                         tension: 0.4,
-                        fill: false,
+                        fill: true,
                         borderWidth: 2,
                         pointRadius: 3
                     },
-                    {
-                        label: 'NO₂',
-                        data: [],
-                        borderColor: '#FFCE56',
-                        backgroundColor: 'rgba(255, 206, 86, 0.1)',
-                        tension: 0.4,
-                        fill: false,
-                        borderWidth: 2,
-                        pointRadius: 3
-                    }
                 ]
             },
             options: {
@@ -120,7 +110,7 @@ class DashboardCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Variação dos Poluentes (Últimas 24h)'
+                        text: 'Material Particulado (PM2.5 e PM10)'
                     },
                     legend: {
                         position: 'top',
@@ -141,7 +131,133 @@ class DashboardCharts {
                     x: {
                         title: {
                             display: true,
-                            text: 'Tempo'
+                            text: 'Hora'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico das últimas 24 horas - MAIS FLEXÍVEL
+        const gases24h = document.getElementById('gases-24h').getContext('2d');
+        this.charts.gases24h = new Chart(gases24h, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'CO',
+                        data: [],
+                        borderColor: '#0072B2',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'O³',
+                        data: [],
+                        borderColor: '#009E73',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    },
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Monóxido de Carbono (CO) e Ozônio (O³)'
+                    },
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'µg/m³'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Hora'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico das últimas 24 horas - MAIS FLEXÍVEL
+        const gasesb24h = document.getElementById('gasesb-24h').getContext('2d');
+        this.charts.gasesb24h = new Chart(gasesb24h, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'NO²',
+                        data: [],
+                        borderColor: '#E69F00',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'SO²',
+                        data: [],
+                        borderColor: '#FFCE56',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    },
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Dióxido de Notrogênio (NO²) e Dióxido de Enxofre (SO²)'
+                    },
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'µg/m³'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Hora'
                         }
                     }
                 }
@@ -193,7 +309,7 @@ class DashboardCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Tendência Semanal - Médias Diárias'
+                        text: 'Médias Diárias'
                     },
                     legend: {
                         position: 'top',
@@ -205,6 +321,7 @@ class DashboardCharts {
                 },
                 scales: {
                     y: {
+                        beginAtZero: true,
                         type: 'linear',
                         display: true,
                         position: 'left',
@@ -272,8 +389,11 @@ class DashboardCharts {
 
         // Atualiza descrição do AQI
         this.updateAQIDescription(latest.aqi);
+        this.updatePM25Description(latest.pm2_5);
+        this.updatePM10Description(latest.pm10);
     }
 
+// Função que avalia o AQI
     updateAQIDescription(aqi) {
         const descriptionElement = document.getElementById('aqi-description');
         const indicatorElement = document.getElementById('current-aqi').parentElement;
@@ -281,19 +401,19 @@ class DashboardCharts {
         let description = '--';
         let color = '#6c757d';
         
-        if (aqi <= 50) {
+        if (aqi = 1) {
             description = 'Boa';
             color = '#28a745';
-        } else if (aqi <= 100) {
+        } else if (aqi = 2) {
             description = 'Moderada';
             color = '#ffc107';
-        } else if (aqi <= 150) {
+        } else if (aqi = 3) {
             description = 'Insalubre';
             color = '#fd7e14';
-        } else if (aqi <= 200) {
+        } else if (aqi = 4) {
             description = 'Muito Insalubre';
             color = '#dc3545';
-        } else if (aqi <= 300) {
+        } else if (aqi = 5) {
             description = 'Perigosa';
             color = '#6f42c1';
         } else {
@@ -305,54 +425,227 @@ class DashboardCharts {
         indicatorElement.style.borderLeftColor = color;
     }
 
+// Função que avalia PM2.5
+    updatePM25Description(pm2_5) {
+        const indicatorPM25 = document.getElementById('current-pm25').parentElement;
+        
+        let description = '--';
+        let color = '#6c757d';
+        
+        if (pm2_5 <= 15) {
+            color = '#28a745';
+        } else if (pm2_5 <= 30) {
+            color = '#ffc107';
+        } else if (pm2_5 <= 55) {
+            color = '#fd7e14';
+        } else if (pm2_5 = 110) {
+            color = '#dc3545';
+        } else {
+            color = '#6f42c1';
+        }
+        indicatorPM25.style.borderLeftColor = color;
+    }
+
+// Função que avalia PM10
+    updatePM10Description(pm10) {
+        const indicatorElement = document.getElementById('current-pm10').parentElement;
+        
+        let description = '--';
+        let color = '#6c757d';
+        
+        if (pm10 <= 45) {
+            color = '#28a745';
+        } else if (pm10 <= 90) {
+            color = '#ffc107';
+        } else if (pm10 <= 150) {
+            color = '#fd7e14';
+        } else if (pm10 <= 250) {
+            color = '#dc3545';
+        } else {
+            color = '#6f42c1';
+        }        
+        indicatorElement.style.borderLeftColor = color;
+    }
+
+//// Função que avalia O³
+//    updateO3Description(aqi) {
+//        const indicatorElement = document.getElementById('current-o3').parentElement;
+//        
+//        let description = '--';
+//        let color = '#6c757d';
+//        
+//        if (aqi = 1) {
+//            color = '#28a745';
+//        } else if (aqi = 2) {
+//            color = '#ffc107';
+//        } else if (aqi = 3) {
+//            color = '#fd7e14';
+//        } else if (aqi = 4) {
+//            color = '#dc3545';
+//        } else if (aqi = 5) {
+//            description = 'Perigosa';
+//            color = '#6f42c1';
+//        } else {
+//            description = 'Muito Perigosa';
+//            color = '#e83e8c';
+//        }
+//        
+//        descriptionElement.textContent = description;
+//        indicatorElement.style.borderLeftColor = color;
+//    }
+//// Função que avalia CO
+//    updateAQIDescription(aqi) {
+//        const descriptionElement = document.getElementById('aqi-description');
+//        const indicatorElement = document.getElementById('current-aqi').parentElement;
+//        
+//        let description = '--';
+//        let color = '#6c757d';
+//        
+//        if (aqi = 1) {
+//            description = 'Boa';
+//            color = '#28a745';
+//        } else if (aqi = 2) {
+//            description = 'Moderada';
+//            color = '#ffc107';
+//        } else if (aqi = 3) {
+//            description = 'Insalubre';
+//            color = '#fd7e14';
+//        } else if (aqi = 4) {
+//            description = 'Muito Insalubre';
+//            color = '#dc3545';
+//        } else if (aqi = 5) {
+//            description = 'Perigosa';
+//            color = '#6f42c1';
+//        } else {
+//            description = 'Muito Perigosa';
+//            color = '#e83e8c';
+//        }
+//        
+//        descriptionElement.textContent = description;
+//        indicatorElement.style.borderLeftColor = color;
+//    }
+//// Função que avalia NO²
+//    updateAQIDescription(aqi) {
+//        const descriptionElement = document.getElementById('aqi-description');
+//        const indicatorElement = document.getElementById('current-aqi').parentElement;
+//        
+//        let description = '--';
+//        let color = '#6c757d';
+//        
+//        if (aqi = 1) {
+//            description = 'Boa';
+//            color = '#28a745';
+//        } else if (aqi = 2) {
+//            description = 'Moderada';
+//            color = '#ffc107';
+//        } else if (aqi = 3) {
+//            description = 'Insalubre';
+//            color = '#fd7e14';
+//        } else if (aqi = 4) {
+//            description = 'Muito Insalubre';
+//            color = '#dc3545';
+//        } else if (aqi = 5) {
+//            description = 'Perigosa';
+//            color = '#6f42c1';
+//        } else {
+//            description = 'Muito Perigosa';
+//            color = '#e83e8c';
+//        }
+//        
+//        descriptionElement.textContent = description;
+//        indicatorElement.style.borderLeftColor = color;
+//    }
+//// Função que avalia SO²
+//    updateAQIDescription(aqi) {
+//        const descriptionElement = document.getElementById('aqi-description');
+//        const indicatorElement = document.getElementById('current-aqi').parentElement;
+//        
+//        let description = '--';
+//        let color = '#6c757d';
+//        
+//        if (aqi = 1) {
+//            description = 'Boa';
+//            color = '#28a745';
+//        } else if (aqi = 2) {
+//            description = 'Moderada';
+//            color = '#ffc107';
+//        } else if (aqi = 3) {
+//            description = 'Insalubre';
+//            color = '#fd7e14';
+//        } else if (aqi = 4) {
+//            description = 'Muito Insalubre';
+//            color = '#dc3545';
+//        } else if (aqi = 5) {
+//            description = 'Perigosa';
+//            color = '#6f42c1';
+//        } else {
+//            description = 'Muito Perigosa';
+//            color = '#e83e8c';
+//        }
+//        
+//        descriptionElement.textContent = description;
+//        indicatorElement.style.borderLeftColor = color;
+//    }
+
+// Função que atualiza todos os gráficos di dia
     update24hChart(dados) {
         if (dados.length === 0) {
             this.clearChart24h();
             return;
         }
-
         // Pega dados das últimas 24 horas
         const now = new Date();
         const twentyFourHoursAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-        
+        // Filtra os dados das ultimas 24h
         const last24h = dados.filter(dado => {
             const date = new Date(dado.timestamp);
             return date >= twentyFourHoursAgo;
         });
-
-        console.log('Dados das últimas 24h:', last24h.length, 'registros'); // DEBUG
-
+        // Log para DEBUG
+        console.log('Dados das últimas 24h:', last24h.length, 'registros');
         if (last24h.length === 0) {
             // Se não há dados das últimas 24h, usa os últimos dados disponíveis (máx 10)
             const recentData = dados.slice(-10);
             this.updateChartWithAvailableData(this.charts.grafico24h, recentData, 'Dados Recentes Disponíveis');
             return;
         }
-
         // Formata labels baseado na frequência dos dados
         const labels = this.formatLabelsBasedOnFrequency(last24h);
-        
+        // Cria constantes para os dados das ultimas 24h
         const pm25Data = last24h.map(dado => dado.pm2_5 || 0);
         const pm10Data = last24h.map(dado => dado.pm10 || 0);
+        const o3Data = last24h.map(dado => dado.o3 || 0);
+        const coData = last24h.map(dado => dado.co || 0);
         const no2Data = last24h.map(dado => dado.no2 || 0);
-
-        this.charts.grafico24h.data.labels = labels;
-        this.charts.grafico24h.data.datasets[0].data = pm25Data;
-        this.charts.grafico24h.data.datasets[1].data = pm10Data;
-        this.charts.grafico24h.data.datasets[2].data = no2Data;
+        const so2Data = last24h.map(dado => dado.so2 || 0);
+        // Coloca os dados no gráfico de partículas
+        this.charts.particulas24h.data.labels = labels;
+        this.charts.particulas24h.data.datasets[0].data = pm25Data;
+        this.charts.particulas24h.data.datasets[1].data = pm10Data;
+        // Coloca os dados no gráfico de gases
+        this.charts.gases24h.data.labels = labels;
+        this.charts.gases24h.data.datasets[0].data = o3Data;
+        this.charts.gases24h.data.datasets[1].data = coData;
+        // Coloca os dados no gráfico de gasesb
+        this.charts.gasesb24h.data.labels = labels;
+        this.charts.gasesb24h.data.datasets[0].data = no2Data;
+        this.charts.gasesb24h.data.datasets[1].data = so2Data;
         
         // Atualiza título baseado nos dados disponíveis
-        this.charts.grafico24h.options.plugins.title.text = `Variação dos Poluentes (${last24h.length} registros)`;
+        //this.charts.grafico24h.options.plugins.title.text = `Variação dos Poluentes (${last24h.length} registros)`;
+        //this.charts.gases24h.options.plugins.title.text = `Variação dos Poluentes (${last24h.length} registros)`;
         
-        this.charts.grafico24h.update();
+        this.charts.particulas24h.update();
+        this.charts.gases24h.update();
+        this.charts.gasesb24h.update();
     }
 
+// Função que atualiza os dados da semana
     update7dChart(dados) {
         if (dados.length === 0) {
             this.clearChart7d();
             return;
         }
-
         // Agrupa dados por dia e calcula médias
         const dailyData = this.calculateDailyAverages(dados);
         
@@ -360,7 +653,6 @@ class DashboardCharts {
         const aqiData = labels.map(day => dailyData[day].aqi || 0);
         const pm25Data = labels.map(day => dailyData[day].pm25 || 0);
         const pm10Data = labels.map(day => dailyData[day].pm10 || 0);
-
         // Formata labels para formato mais amigável
         const formattedLabels = labels.map(label => {
             const date = new Date(label);
@@ -370,7 +662,6 @@ class DashboardCharts {
                 weekday: 'short'
             });
         });
-
         this.charts.grafico7dias.data.labels = formattedLabels;
         this.charts.grafico7dias.data.datasets[0].data = aqiData;
         this.charts.grafico7dias.data.datasets[1].data = pm25Data;
@@ -382,7 +673,7 @@ class DashboardCharts {
         this.charts.grafico7dias.update();
     }
 
-    // Função auxiliar para formatar labels baseado na frequência dos dados
+// Função auxiliar para formatar labels baseado na frequência dos dados
     formatLabelsBasedOnFrequency(dados) {
         if (dados.length === 0) return [];
         
@@ -419,7 +710,7 @@ class DashboardCharts {
         }
     }
 
-    // Função para calcular médias diárias
+// Função para calcular médias diárias
     calculateDailyAverages(dados) {
         const dailyData = {};
         
@@ -464,7 +755,7 @@ class DashboardCharts {
         return result;
     }
 
-    // Função para atualizar gráfico com dados disponíveis
+// Função para atualizar gráfico com dados disponíveis
     updateChartWithAvailableData(chart, dados, title) {
         const labels = dados.map(dado => {
             const date = new Date(dado.timestamp);
@@ -475,19 +766,28 @@ class DashboardCharts {
                 minute: '2-digit'
             });
         });
-
+        // Dados gráfico de partículas
         const pm25Data = dados.map(dado => dado.pm2_5 || 0);
         const pm10Data = dados.map(dado => dado.pm10 || 0);
+        // Dados gráfico de gases
+        const o3Data = dados.map(dado => dado.o3 || 0);
+        const coData = dados.map(dado => dado.co || 0);
+        // Dados gráfico de gasesb
         const no2Data = dados.map(dado => dado.no2 || 0);
+        const so2Data = dados.map(dado => dado.so2 || 0);
 
         chart.data.labels = labels;
         chart.data.datasets[0].data = pm25Data;
         chart.data.datasets[1].data = pm10Data;
         chart.data.datasets[2].data = no2Data;
+        chart.data.datasets[3].data = o3Data;
+        chart.data.datasets[4].data = coData;
+        chart.data.datasets[5].data = so2Data;
         chart.options.plugins.title.text = title;
         chart.update();
     }
 
+// Função para limpar os indicadores
     clearIndicators() {
         document.getElementById('current-aqi').textContent = '--';
         document.getElementById('current-pm25').textContent = '--';
@@ -499,13 +799,26 @@ class DashboardCharts {
         document.getElementById('aqi-description').textContent = '--';
     }
 
+// Função para limpar os graficos do dia
     clearChart24h() {
-        this.charts.grafico24h.data.labels = [];
-        this.charts.grafico24h.data.datasets.forEach(dataset => dataset.data = []);
-        this.charts.grafico24h.options.plugins.title.text = 'Sem dados disponíveis';
-        this.charts.grafico24h.update();
+        // Para gráfico particulas
+        this.charts.particulas24h.data.labels = [];
+        this.charts.particulas24h.data.datasets.forEach(dataset => dataset.data = []);
+        this.charts.particulas24h.options.plugins.title.text = 'Sem dados disponíveis';
+        this.charts.particulas24h.update();
+        // Para gráfico gases
+        this.charts.gases24h.data.labels = [];
+        this.charts.gases24h.data.datasets.forEach(dataset => dataset.data = []);
+        this.charts.gases24h.options.plugins.title.text = 'Sem dados disponíveis';
+        this.charts.gases24h.update();
+        // Para gráfico gasesb
+        this.charts.gasesb24h.data.labels = [];
+        this.charts.gasesb24h.data.datasets.forEach(dataset => dataset.data = []);
+        this.charts.gasesb24h.options.plugins.title.text = 'Sem dados disponíveis';
+        this.charts.gasesb24h.update();
     }
 
+// Função para limpar os graficos da semana
     clearChart7d() {
         this.charts.grafico7dias.data.labels = [];
         this.charts.grafico7dias.data.datasets.forEach(dataset => dataset.data = []);
@@ -513,6 +826,7 @@ class DashboardCharts {
         this.charts.grafico7dias.update();
     }
 
+//Função que limpa todos os campos de gráficos
     clearCharts() {
         this.clearIndicators();
         this.clearChart24h();
