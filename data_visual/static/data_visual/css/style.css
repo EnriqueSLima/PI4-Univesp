@@ -20,12 +20,10 @@ body {
 .sidebar {
     width: 60% !important;
     background: whitesmoke;
-    padding: 10px;
     overflow-y: auto;
     box-shadow: 2px 0 15px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    gap: 15px;
     height: 100vh; /* Altura total */
 }
 
@@ -44,7 +42,7 @@ body {
 .dashboard-container {
     display: flex;
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
@@ -54,18 +52,18 @@ body {
 .dashboard-header {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    background: linear-gradient(135deg, #094808, #08a236);
+    justify-content: space-around;
+    background: linear-gradient(135deg, #08a236, #094808);
     color: white;
-    padding: 1rem;
+    padding: 0.8rem;
     text-align: center;
-    margin: -20px -20px 20px -20px;
 }
 
 .logo {
     padding: 5px;
-    width: 80px;
-    height: 80px;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
 }
 
 .dashboard-header h1 {
@@ -74,11 +72,12 @@ body {
 
 /* Cards de Gráficos */
 .chart-card {
-    background: white;
+    background: whitesmoke;
     border-radius: 10px;
     padding: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-left: 4px solid #08a236;
+    border: solid 2px green;
+    /* border-left: 5px solid #08a236; */
 }
 
 .chart-card h3 {
@@ -141,8 +140,10 @@ body {
 
 /* Seletor de Estação */
 .station-selector {
+    display: block;
     margin-bottom: 10px;
     padding: 10px;
+    margin: 1rem;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -166,7 +167,9 @@ body {
 /* Indicadores Atuais */
 .current-indicators {
     margin-bottom: 20px;
+    border: solid 2px green;
     padding: 15px;
+    margin: 1rem;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -178,17 +181,24 @@ body {
     font-size: 16px;
 }
 
+.indicadores {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .indicators-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+    width: 60%;
 }
 
 .indicator-card {
     padding: 5px;
     background: #f8f9fa;
     border-radius: 6px;
-    border-left: 4px solid #007bff;
+    border-left: 5px solid #007bff;
     text-align: center;
 }
 
@@ -222,17 +232,18 @@ body {
 }
 
 /* Gráficos */
-/* .chart-container {
-    height: 250px;
+.chart-container {
+    height: 350px;
     position: relative;
-} */
+    margin-bottom: 20px;
+}
 
 .chart-card {
-    margin-bottom: 20px;
+    margin: 1rem;
     padding: 25px;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 5PX 5px 5px rgba(0,0,0,0.1);
 }
 
 .chart-card h3 {
@@ -253,7 +264,7 @@ body {
     padding: 15px;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,1);
     text-align: center;
 }
 
