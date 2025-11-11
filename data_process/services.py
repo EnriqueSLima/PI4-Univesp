@@ -278,3 +278,151 @@ def check_historical_data():
         latest_str = latest.timestamp.strftime('%d/%m/%Y %H:%M') if latest else "Nenhum"
         
         print(f"📍 {station['nome']}: {count} registros | Mais recente: {latest_str}")
+
+def collect_last_hour_data_all_stations(delay_between_requests=1.0):
+    # Configurações da chave
+    API_KEY = settings.OPENWEATHER_API_KEY
+    BASE_URL = "http://api.openweathermap.org/data/2.5/air_pollution/history"
+    
+    # Lista de estações (mesma da sua função)
+    all_stations = [
+        {'coords': [-23.50455587377614, -46.62856773359203], 'nome': 'Santana', 'estacao_id': '1'},
+        # ... suas outras estações
+    ]
+    
+    print(f"🚀 INICIANDO COLETA DA ÚLTIMA HORA PARA {len(all_stations)} ESTAÇÕES")
+    print("=" * 60)
+    
+    # Calcular timestamps para última hora
+    end_date = datetime.now()
+    start_date = end_date - timedelta(hours=1)  # Apenas 1 hora atrás
+    start_timestamp = int(start_date.timestamp())
+    end_timestamp = int(end_date.timestamp())
+    
+    print(f"📊 Período da API: {start_date.strftime('%d/%m/%Y %H:%M')} até {end_date.strftime('%d/%m/%Y %H:%M')}")
+    print("=" * 60)
+    
+    total_saved = 0
+    results = []
+    
+    for i, station in enumerate(all_stations, 1):
+        lat, lon = station['coords']
+        station_name = station['nome']
+        station_id = station['estacao_id']
+        
+        print(f"\n[{i}/{len(all_stations)}] 📍 Processando {station_name}...")
+        
+        # Construir URL
+        url = f"{BASE_URL}?lat={lat}&lon={lon}&start={start_timestamp}&end={end_timestamp}&appid={API_KEY}"
+        
+        try:
+            # Fazer requisição com delay
+            if i > 1:
+                time.sleep(delay_between_requests)
+            
+            response = requests.get(url)
+            print(f"📡 Status: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                saved_count = 0
+                
+                if 'list' in data and len(data['list']) > 0:
+                    print(f"📈 Encontrados {len(data['list'])} registros na última hora")
+                    
+                    for item in data['list']:
+                        # Usar o timestamp real da medição
+                        timestamp = datetime.fromtimestamp(item['dt'])
+                        
+                        print(f"   🕐 Medição de: {timestamp.strftime('%d/%m/%Y %H:%M')}")
+                        
+                        # Verificar se já existe
+                        exists = AirQualityData.objects.filter(
+                            station_id=station_id,
+                            timestamp=timestamp
+                        ).exists()
+                        
+                        if not exists:
+                            # Salvar no banco
+                            air_data = AirQualityData(
+                                station_id=station_id,
+                                station_name=station_name,
+                                latitude=lat,
+                                longitude=lon,
+                                aqi=item['main']['aqi'],
+                                co=item['components']['co'],
+                                no=item['components']['no'],
+                                no2=item['components']['no2'],
+                                o3=item['components']['o3'],
+                                so2=item['components']['so2'],
+                                pm2_5=item['components']['pm2_5'],
+                                pm10=item['components']['pm10'],
+                                nh3=item['components']['nh3'],
+                                timestamp=timestamp
+                            )
+                            air_data.save()
+                            saved_count += 1
+                        else:
+                            print(f"   ⚠️  Registro duplicado: {timestamp}")
+                    
+                    total_saved += saved_count
+                    results.append({
+                        'station': station_name,
+                        'status': 'success',
+                        'records_found': len(data['list']),
+                        'records_saved': saved_count
+                    })
+                    
+                    print(f"✅ {station_name}: {saved_count} novos registros salvos")
+                    
+                else:
+                    print(f"⚠️  {station_name}: Nenhum dado na última hora")
+                    results.append({
+                        'station': station_name,
+                        'status': 'no_data',
+                        'records_found': 0,
+                        'records_saved': 0
+                    })
+                    
+            else:
+                print(f"❌ {station_name}: Erro {response.status_code}")
+                results.append({
+                    'station': station_name,
+                    'status': 'error',
+                    'error_code': response.status_code,
+                    'records_saved': 0
+                })
+                
+        except Exception as e:
+            print(f"💥 {station_name}: Erro na requisição - {e}")
+            results.append({
+                'station': station_name,
+                'status': 'exception',
+                'error': str(e),
+                'records_saved': 0
+            })
+    
+    # Relatório final
+    print("\n" + "=" * 60)
+    print("📊 RELATÓRIO FINAL - ÚLTIMA HORA")
+    print("=" * 60)
+    
+    success_count = sum(1 for r in results if r['status'] == 'success')
+    error_count = sum(1 for r in results if r['status'] in ['error', 'exception'])
+    no_data_count = sum(1 for r in results if r['status'] == 'no_data')
+    
+    print(f"🏁 COLETA CONCLUÍDA!")
+    print(f"📊 Estações processadas: {len(all_stations)}")
+    print(f"✅ Com dados: {success_count} estações")
+    print(f"⚠️  Sem dados: {no_data_count} estações")
+    print(f"❌ Erros: {error_count} estações")
+    print(f"💾 Total de registros salvos: {total_saved}")
+    
+    return {
+        'total_stations': len(all_stations),
+        'total_records_saved': total_saved,
+        'success_count': success_count,
+        'error_count': error_count,
+        'no_data_count': no_data_count,
+        'details': results
+    }
