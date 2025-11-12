@@ -18,8 +18,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-<<<<<<< HEAD
-=======
+
 from django.http import HttpResponse
 
 # View simples para teste
@@ -32,7 +31,7 @@ def home(request):
         <li><a href="/dashboard/">Dashboard</a></li>
     </ul>
     """)
->>>>>>> 6c75298 (Altera urls no core para dashboard)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
