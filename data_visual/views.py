@@ -300,7 +300,7 @@ def add_station_marker(map_object):
             coords,
             popup=folium.Popup(popup_html, max_width=300),
             tooltip=f"Clique para ver dados de {nome}",
-            icon=folium.Icon(color=aqi_color, icon=icone)
+            icon=folium.Icon(color=cor, icon=icone)
         )
         
         # Adicionar propriedade customizada ao marcador
@@ -380,7 +380,7 @@ def add_station_data(map_object):
         '''
         
         # Escolher ícone baseado na qualidade do ar
-        icon_type = 'info-sign' if data.aqi >= 2 else 'exclamation-sign'
+        icon_type = 'info-sign' if data.aqi <= 2 else 'exclamation-sign'
         
         marker = folium.Marker(
             coords,
