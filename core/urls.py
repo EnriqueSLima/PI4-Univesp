@@ -18,6 +18,21 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+<<<<<<< HEAD
+=======
+from django.http import HttpResponse
+
+# View simples para teste
+def home(request):
+    return HttpResponse("""
+    <h1>🚀 Django no Railway - Deploy Bem Sucedido!</h1>
+    <p>Sua aplicação está online e funcionando!</p>
+    <ul>
+        <li><a href="/admin/">Admin Django</a></li>
+        <li><a href="/dashboard/">Dashboard</a></li>
+    </ul>
+    """)
+>>>>>>> 6c75298 (Altera urls no core para dashboard)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
