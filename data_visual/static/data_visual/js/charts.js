@@ -96,7 +96,7 @@ class DashboardCharts {
                         label: 'PM10',
                         data: [],
                         borderColor: 'darkgray',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        backgroundColor: 'rgba(255, 162, 235, 0.1)',
                         tension: 0.4,
                         fill: true,
                         borderWidth: 2,
@@ -149,7 +149,7 @@ class DashboardCharts {
                         label: 'CO',
                         data: [],
                         borderColor: '#0072B2',
-                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        backgroundColor: 'rgba(45, 146, 223, 1)',
                         tension: 0.4,
                         fill: true,
                         borderWidth: 2,
@@ -159,7 +159,7 @@ class DashboardCharts {
                         label: 'O³',
                         data: [],
                         borderColor: '#009E73',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        backgroundColor: 'rgba(26, 199, 95, 1)',
                         tension: 0.4,
                         fill: true,
                         borderWidth: 2,
@@ -212,7 +212,7 @@ class DashboardCharts {
                         label: 'NO²',
                         data: [],
                         borderColor: '#E69F00',
-                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        backgroundColor: 'rgba(244, 147, 73, 0.99)',
                         tension: 0.4,
                         fill: true,
                         borderWidth: 2,
@@ -222,7 +222,7 @@ class DashboardCharts {
                         label: 'SO²',
                         data: [],
                         borderColor: '#FFCE56',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        backgroundColor: 'rgba(235, 226, 54, 0.94)',
                         tension: 0.4,
                         fill: true,
                         borderWidth: 2,
@@ -236,7 +236,7 @@ class DashboardCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Dióxido de Notrogênio (NO²) e Dióxido de Enxofre (SO²)'
+                        text: 'Dióxido de Nitrogênio (NO²) e Dióxido de Enxofre (SO²)'
                     },
                     legend: {
                         position: 'top',
@@ -275,7 +275,7 @@ class DashboardCharts {
                         label: 'AQI Médio',
                         data: [],
                         borderColor: '#E74C3C',
-                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        backgroundColor: 'rgba(231, 77, 60, 0.81)',
                         borderWidth: 3,
                         fill: false,
                         tension: 0.4,
@@ -285,7 +285,7 @@ class DashboardCharts {
                         label: 'PM2.5 Médio',
                         data: [],
                         borderColor: '#FF6384',
-                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        backgroundColor: 'rgba(255, 99, 133, 0.8)',
                         borderWidth: 2,
                         fill: false,
                         tension: 0.4,
@@ -295,7 +295,7 @@ class DashboardCharts {
                         label: 'PM10 Médio',
                         data: [],
                         borderColor: '#36A2EB',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        backgroundColor: 'rgba(54, 163, 235, 0.79)',
                         borderWidth: 2,
                         fill: false,
                         tension: 0.4,
@@ -391,6 +391,10 @@ class DashboardCharts {
         this.updateAQIDescription(latest.aqi);
         this.updatePM25Description(latest.pm2_5);
         this.updatePM10Description(latest.pm10);
+        this.updateO3Description(latest.o3);
+        this.updateCODescription(latest.co);
+        this.updateNO2Description(latest.no2);
+        this.updateSO2Description(latest.so2);
     }
 
 // Função que avalia o AQI
@@ -401,19 +405,19 @@ class DashboardCharts {
         let description = '--';
         let color = '#6c757d';
         
-        if (aqi = 1) {
+        if (aqi <= 1) {
             description = 'Boa';
             color = '#28a745';
-        } else if (aqi = 2) {
+        } else if (aqi <= 2) {
             description = 'Moderada';
             color = '#ffc107';
-        } else if (aqi = 3) {
+        } else if (aqi <= 3) {
             description = 'Insalubre';
             color = '#fd7e14';
-        } else if (aqi = 4) {
+        } else if (aqi <= 4) {
             description = 'Muito Insalubre';
             color = '#dc3545';
-        } else if (aqi = 5) {
+        } else if (aqi <= 5) {
             description = 'Perigosa';
             color = '#6f42c1';
         } else {
@@ -467,125 +471,120 @@ class DashboardCharts {
         indicatorElement.style.borderLeftColor = color;
     }
 
-//// Função que avalia O³
-//    updateO3Description(aqi) {
-//        const indicatorElement = document.getElementById('current-o3').parentElement;
-//        
-//        let description = '--';
-//        let color = '#6c757d';
-//        
-//        if (aqi = 1) {
-//            color = '#28a745';
-//        } else if (aqi = 2) {
-//            color = '#ffc107';
-//        } else if (aqi = 3) {
-//            color = '#fd7e14';
-//        } else if (aqi = 4) {
-//            color = '#dc3545';
-//        } else if (aqi = 5) {
-//            description = 'Perigosa';
-//            color = '#6f42c1';
-//        } else {
-//            description = 'Muito Perigosa';
-//            color = '#e83e8c';
-//        }
-//        
-//        descriptionElement.textContent = description;
-//        indicatorElement.style.borderLeftColor = color;
-//    }
-//// Função que avalia CO
-//    updateAQIDescription(aqi) {
-//        const descriptionElement = document.getElementById('aqi-description');
-//        const indicatorElement = document.getElementById('current-aqi').parentElement;
-//        
-//        let description = '--';
-//        let color = '#6c757d';
-//        
-//        if (aqi = 1) {
-//            description = 'Boa';
-//            color = '#28a745';
-//        } else if (aqi = 2) {
-//            description = 'Moderada';
-//            color = '#ffc107';
-//        } else if (aqi = 3) {
-//            description = 'Insalubre';
-//            color = '#fd7e14';
-//        } else if (aqi = 4) {
-//            description = 'Muito Insalubre';
-//            color = '#dc3545';
-//        } else if (aqi = 5) {
-//            description = 'Perigosa';
-//            color = '#6f42c1';
-//        } else {
-//            description = 'Muito Perigosa';
-//            color = '#e83e8c';
-//        }
-//        
-//        descriptionElement.textContent = description;
-//        indicatorElement.style.borderLeftColor = color;
-//    }
-//// Função que avalia NO²
-//    updateAQIDescription(aqi) {
-//        const descriptionElement = document.getElementById('aqi-description');
-//        const indicatorElement = document.getElementById('current-aqi').parentElement;
-//        
-//        let description = '--';
-//        let color = '#6c757d';
-//        
-//        if (aqi = 1) {
-//            description = 'Boa';
-//            color = '#28a745';
-//        } else if (aqi = 2) {
-//            description = 'Moderada';
-//            color = '#ffc107';
-//        } else if (aqi = 3) {
-//            description = 'Insalubre';
-//            color = '#fd7e14';
-//        } else if (aqi = 4) {
-//            description = 'Muito Insalubre';
-//            color = '#dc3545';
-//        } else if (aqi = 5) {
-//            description = 'Perigosa';
-//            color = '#6f42c1';
-//        } else {
-//            description = 'Muito Perigosa';
-//            color = '#e83e8c';
-//        }
-//        
-//        descriptionElement.textContent = description;
-//        indicatorElement.style.borderLeftColor = color;
-//    }
-//// Função que avalia SO²
-//    updateAQIDescription(aqi) {
-//        const descriptionElement = document.getElementById('aqi-description');
-//        const indicatorElement = document.getElementById('current-aqi').parentElement;
-//        
-//        let description = '--';
-//        let color = '#6c757d';
-//        
-//        if (aqi = 1) {
-//            description = 'Boa';
-//            color = '#28a745';
-//        } else if (aqi = 2) {
-//            description = 'Moderada';
-//            color = '#ffc107';
-//        } else if (aqi = 3) {
-//            description = 'Insalubre';
-//            color = '#fd7e14';
-//        } else if (aqi = 4) {
-//            description = 'Muito Insalubre';
-//            color = '#dc3545';
-//        } else if (aqi = 5) {
-//            description = 'Perigosa';
-//            color = '#6f42c1';
-//        } else {
-//            description = 'Muito Perigosa';
-//            color = '#e83e8c';
-//        }
-//        
-//        descriptionElement.textContent = description;
-//        indicatorElement.style.borderLeftColor = color;
-//    }
+// Função que avalia O³
+    updateO3Description(o3) {
+        const indicatorElement = document.getElementById('current-o3').parentElement;
+        
+        let description = '--';
+        let color = '#6c757d';
+        
+        if (o3 = 1) {
+            color = '#28a745';
+        } else if (o3 = 2) {
+            color = '#ffc107';
+        } else if (o3 = 3) {
+            color = '#fd7e14';
+        } else if (o3 = 4) {
+            color = '#dc3545';
+        } else if (o3 = 5) {
+            description = 'Perigosa';
+            color = '#6f42c1';
+        } else {
+            description = 'Muito Perigosa';
+            color = '#e83e8c';
+        }
+        
+        indicatorElement.style.borderLeftColor = color;
+    }
+// Função que avalia CO
+    updateCODescription(co) {
+        const indicatorElement = document.getElementById('current-co').parentElement;
+        
+        let description = '--';
+        let color = '#6c757d';
+        
+        if (co = 1) {
+            description = 'Boa';
+            color = '#28a745';
+        } else if (co = 2) {
+            description = 'Moderada';
+            color = '#ffc107';
+        } else if (co = 3) {
+            description = 'Insalubre';
+            color = '#fd7e14';
+        } else if (co = 4) {
+            description = 'Muito Insalubre';
+            color = '#dc3545';
+        } else if (co = 5) {
+            description = 'Perigosa';
+            color = '#6f42c1';
+        } else {
+            description = 'Muito Perigosa';
+            color = '#e83e8c';
+        }
+        
+        indicatorElement.style.borderLeftColor = color;
+    }
+// Função que avalia NO²
+    updateNO2Description(no2) {
+        const indicatorElement = document.getElementById('current-no2').parentElement;
+        
+        let description = '--';
+        let color = '#6c757d';
+        
+        if (no2 = 1) {
+            description = 'Boa';
+            color = '#28a745';
+        } else if (no2 = 2) {
+            description = 'Moderada';
+            color = '#ffc107';
+        } else if (no2 = 3) {
+            description = 'Insalubre';
+            color = '#fd7e14';
+        } else if (no2 = 4) {
+            description = 'Muito Insalubre';
+            color = '#dc3545';
+        } else if (no2 = 5) {
+            description = 'Perigosa';
+            color = '#6f42c1';
+        } else {
+            description = 'Muito Perigosa';
+            color = '#e83e8c';
+        }
+        
+        indicatorElement.style.borderLeftColor = color;
+    }
+
+// Função que avalia SO²
+    updateSO2Description(so2) {
+        const indicatorElement = document.getElementById('current-so2').parentElement;
+        
+        let description = '--';
+        let color = '#6c757d';
+        
+        if (so2 = 1) {
+            description = 'Boa';
+            color = '#28a745';
+        } else if (so2 = 2) {
+            description = 'Moderada';
+            color = '#ffc107';
+        } else if (so2 = 3) {
+            description = 'Insalubre';
+            color = '#fd7e14';
+        } else if (so2 = 4) {
+            description = 'Muito Insalubre';
+            color = '#dc3545';
+        } else if (so2 = 5) {
+            description = 'Perigosa';
+            color = '#6f42c1';
+        } else {
+            description = 'Muito Perigosa';
+            color = '#e83e8c';
+        }
+        
+        descriptionElement.textContent = description;
+        indicatorElement.style.borderLeftColor = color;
+    }
 
 // Função que atualiza todos os gráficos di dia
     update24hChart(dados) {
