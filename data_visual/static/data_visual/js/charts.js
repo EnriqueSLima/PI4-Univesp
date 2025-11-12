@@ -478,22 +478,17 @@ class DashboardCharts {
         let description = '--';
         let color = '#6c757d';
         
-        if (o3 = 1) {
+        if (o3 <= 100) {
             color = '#28a745';
-        } else if (o3 = 2) {
+        } else if (o3 <= 130) {
             color = '#ffc107';
-        } else if (o3 = 3) {
+        } else if (o3 <= 160) {
             color = '#fd7e14';
-        } else if (o3 = 4) {
+        } else if (o3 <=200) {
             color = '#dc3545';
-        } else if (o3 = 5) {
-            description = 'Perigosa';
+        } else if (o3 > 200) {
             color = '#6f42c1';
-        } else {
-            description = 'Muito Perigosa';
-            color = '#e83e8c';
-        }
-        
+        }        
         indicatorElement.style.borderLeftColor = color;
     }
 // Função que avalia CO
@@ -503,26 +498,17 @@ class DashboardCharts {
         let description = '--';
         let color = '#6c757d';
         
-        if (co = 1) {
-            description = 'Boa';
+        if (co <= 4) {
             color = '#28a745';
-        } else if (co = 2) {
-            description = 'Moderada';
+        } else if (co <= 9) {
             color = '#ffc107';
-        } else if (co = 3) {
-            description = 'Insalubre';
+        } else if (co <= 15) {
             color = '#fd7e14';
-        } else if (co = 4) {
-            description = 'Muito Insalubre';
+        } else if (co <= 30) {
             color = '#dc3545';
-        } else if (co = 5) {
-            description = 'Perigosa';
+        } else if (co > 30) {
             color = '#6f42c1';
-        } else {
-            description = 'Muito Perigosa';
-            color = '#e83e8c';
-        }
-        
+        }        
         indicatorElement.style.borderLeftColor = color;
     }
 // Função que avalia NO²
@@ -532,26 +518,17 @@ class DashboardCharts {
         let description = '--';
         let color = '#6c757d';
         
-        if (no2 = 1) {
-            description = 'Boa';
+        if (no2 <= 40) {
             color = '#28a745';
-        } else if (no2 = 2) {
-            description = 'Moderada';
+        } else if (no2 <= 80) {
             color = '#ffc107';
-        } else if (no2 = 3) {
-            description = 'Insalubre';
+        } else if (no2 <= 180) {
             color = '#fd7e14';
-        } else if (no2 = 4) {
-            description = 'Muito Insalubre';
+        } else if (no2 <= 280) {
             color = '#dc3545';
-        } else if (no2 = 5) {
-            description = 'Perigosa';
+        } else if (no2 > 280) {
             color = '#6f42c1';
-        } else {
-            description = 'Muito Perigosa';
-            color = '#e83e8c';
-        }
-        
+        }        
         indicatorElement.style.borderLeftColor = color;
     }
 
@@ -562,27 +539,17 @@ class DashboardCharts {
         let description = '--';
         let color = '#6c757d';
         
-        if (so2 = 1) {
-            description = 'Boa';
+        if (so2 <= 50) {
             color = '#28a745';
-        } else if (so2 = 2) {
-            description = 'Moderada';
+        } else if (so2 <= 100) {
             color = '#ffc107';
-        } else if (so2 = 3) {
-            description = 'Insalubre';
+        } else if (so2 <= 250) {
             color = '#fd7e14';
-        } else if (so2 = 4) {
-            description = 'Muito Insalubre';
+        } else if (so2 <= 350) {
             color = '#dc3545';
-        } else if (so2 = 5) {
-            description = 'Perigosa';
+        } else if (so2 >350) {
             color = '#6f42c1';
-        } else {
-            description = 'Muito Perigosa';
-            color = '#e83e8c';
-        }
-        
-        descriptionElement.textContent = description;
+        } 
         indicatorElement.style.borderLeftColor = color;
     }
 
