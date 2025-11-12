@@ -27,7 +27,7 @@ def home(request):
     <p>Sua aplicação está online e funcionando!</p>
     <ul>
         <li><a href="/admin/">Admin Django</a></li>
-        <li><a href="/api/health/">Health Check</a></li>
+        <li><a href="/dashboard/">Dashboard</a></li>
     </ul>
     """)
 
