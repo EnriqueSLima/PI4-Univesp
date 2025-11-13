@@ -140,7 +140,7 @@ body {
 
 /* Seletor de Estação */
 .station-selector {
-    display: none;
+    display: block;
     margin-bottom: 10px;
     padding: 10px;
     margin: 1rem;
