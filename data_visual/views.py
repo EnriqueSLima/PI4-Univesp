@@ -85,15 +85,8 @@ def sp_map_dashboard(request):
     add_distritos_layer(sp_map)
     # Adiciona camada de subprefeituras
     add_subprefeituras_layer(sp_map)
-<<<<<<< HEAD
-    # Adiciona controles de camadas
-    folium.LayerControl().add_to(sp_map)
     # Adiciona marcadores estações de medição
     add_station_marker(sp_map)
-=======
->>>>>>> f1c61f4 (Adiciona layer com praças e largos e legenda)
-    # Adiciona estações de medição
-    add_station_data(sp_map)
     # Adiciona camada com praças e largos
     add_areaverde_layer(sp_map)
     
