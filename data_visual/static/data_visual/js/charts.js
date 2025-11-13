@@ -88,7 +88,7 @@ class DashboardCharts {
                         borderColor: 'lightgray',
                         backgroundColor: 'rgba(255, 99, 132, 0.1)',
                         tension: 0.4,
-                        fill: true,
+                        fill: false,
                         borderWidth: 2,
                         pointRadius: 3
                     },
@@ -98,7 +98,7 @@ class DashboardCharts {
                         borderColor: 'darkgray',
                         backgroundColor: 'rgba(255, 162, 235, 0.1)',
                         tension: 0.4,
-                        fill: true,
+                        fill: false,
                         borderWidth: 2,
                         pointRadius: 3
                     },
@@ -151,7 +151,7 @@ class DashboardCharts {
                         borderColor: '#0072B2',
                         backgroundColor: 'rgba(45, 146, 223, 1)',
                         tension: 0.4,
-                        fill: true,
+                        fill: false,
                         borderWidth: 2,
                         pointRadius: 3
                     },
@@ -161,7 +161,7 @@ class DashboardCharts {
                         borderColor: '#009E73',
                         backgroundColor: 'rgba(26, 199, 95, 1)',
                         tension: 0.4,
-                        fill: true,
+                        fill: false,
                         borderWidth: 2,
                         pointRadius: 3
                     },
@@ -214,7 +214,7 @@ class DashboardCharts {
                         borderColor: '#E69F00',
                         backgroundColor: 'rgba(244, 147, 73, 0.99)',
                         tension: 0.4,
-                        fill: true,
+                        fill: false,
                         borderWidth: 2,
                         pointRadius: 3
                     },
@@ -224,7 +224,7 @@ class DashboardCharts {
                         borderColor: '#FFCE56',
                         backgroundColor: 'rgba(235, 226, 54, 0.94)',
                         tension: 0.4,
-                        fill: true,
+                        fill: false,
                         borderWidth: 2,
                         pointRadius: 3
                     },
