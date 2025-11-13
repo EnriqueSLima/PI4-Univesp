@@ -80,6 +80,25 @@ def sp_map_dashboard(request):
     </script>
     """
     sp_map.get_root().html.add_child(folium.Element(restrict_script))
+
+    javascript_code = '''
+    <script>
+    function loadStationChart(stationId) {
+        // Acessa o DOM da página pai onde está o select
+        if (window.parent) {
+            const select = window.parent.document.getElementById('station-select');
+
+            if (select) {
+                select.value = stationId;
+                const event = new Event('change', { bubbles: true });
+                select.dispatchEvent(event);
+            }
+        }
+    }
+    </script>
+    '''
+
+    sp_map.get_root().html.add_child(folium.Element(javascript_code))
     
     # Adiciona camada de distritos
     add_distritos_layer(sp_map)
