@@ -44,10 +44,10 @@ class AirQualityData(models.Model):
     def get_aqi_color(self):
         """Retorna a cor baseada no AQI"""
         aqi_colors = {
-            1: "lightgreen",
-            2: "green",
-            3: "lightred", 
-            4: "red",
-            5: "darkred"
+            1: "green",
+            2: "beige",
+            3: "orange", 
+            4: "lightred",
+            5: "purple"
         }
         return aqi_colors.get(self.aqi, "gray")

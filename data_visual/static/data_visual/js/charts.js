@@ -498,15 +498,15 @@ class DashboardCharts {
         let description = '--';
         let color = '#6c757d';
         
-        if (co <= 4) {
+        if (co <= 40) {
             color = '#28a745';
-        } else if (co <= 9) {
+        } else if (co <= 90) {
             color = '#ffc107';
-        } else if (co <= 15) {
+        } else if (co <= 150) {
             color = '#fd7e14';
-        } else if (co <= 30) {
+        } else if (co <= 300) {
             color = '#dc3545';
-        } else if (co > 30) {
+        } else if (co > 300) {
             color = '#6f42c1';
         }        
         indicatorElement.style.borderLeftColor = color;
