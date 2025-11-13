@@ -8,8 +8,7 @@ from datetime import datetime, timedelta
 import json
 from django.http import JsonResponse
 from data_process.models import AirQualityData
-
-from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp
+from .utils.geo_utils import get_sp_geojson, get_distritos_sp, get_subprefeituras_sp, get_areaverde_sp
 
 
 #   View para mapa focado em São Paulo
@@ -86,12 +85,20 @@ def sp_map_dashboard(request):
     add_distritos_layer(sp_map)
     # Adiciona camada de subprefeituras
     add_subprefeituras_layer(sp_map)
+<<<<<<< HEAD
     # Adiciona controles de camadas
     folium.LayerControl().add_to(sp_map)
     # Adiciona marcadores estações de medição
     add_station_marker(sp_map)
+=======
+>>>>>>> f1c61f4 (Adiciona layer com praças e largos e legenda)
     # Adiciona estações de medição
     add_station_data(sp_map)
+    # Adiciona camada com praças e largos
+    add_areaverde_layer(sp_map)
+    
+    # Adiciona controles de camadas
+    folium.LayerControl().add_to(sp_map)
 
     map_html = sp_map._repr_html_()
 
@@ -191,7 +198,7 @@ def add_subprefeituras_layer(map_object):
         popup=folium.GeoJsonPopup(
             fields=['nm_subprefeitura', 'sg_subprefeitura', 'qt_area_quilometro'],
             aliases=['Subprefeitura:', 'Sigla:', 'Área (km²):'],
-            localize=True,
+            localize=False,
             max_width=250
         ),
         show=False  # Ocultar por padrão (para não sobrecarregar)
@@ -210,7 +217,7 @@ def add_distritos_layer(map_object):
         distritos_data,
         name='Distritos',
         style_function=lambda feature: {
-            'fillColor': get_color_for_distrito(feature),
+            'fillColor': 'None',#get_color_for_distrito(feature),
             'color': 'black',
             'weight': 1.2,
             'fillOpacity': 0.3,
@@ -230,24 +237,39 @@ def add_distritos_layer(map_object):
         show=True  # Visível por padrão
     ).add_to(map_object)
 
-#   Adiciona layer com cores de preenchimento dos distritos.
-def get_color_for_distrito(feature):
-    """Gera cores consistentes para cada distrito"""
-    properties = feature.get('properties', {})
-    distrito_name = properties.get('nm_distrito_municipal', '') or 'unknown'
-    
-    import hashlib
-    hash_obj = hashlib.md5(distrito_name.encode())
-    hash_int = int(hash_obj.hexdigest()[:8], 16)
-    
-    # Cores mais suaves para melhor visualização
-    colors = [
-        '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7',
-        '#C7CEEA', '#F8B195', '#F67280', '#C06C84', '#6C5B7B',
-        '#355C7D', '#99B898', '#FECEAB', '#FF847C', '#E84A5F'
-    ]
-    
-    return colors[hash_int % len(colors)]
+#   Adiciona layer com praças e largos.
+def add_areaverde_layer(map_object):
+    """Adiciona camada de praças e largos - versão mínima"""
+    try:
+        areaverde_data = get_areaverde_sp()
+        
+        if not areaverde_data or not areaverde_data.get('features'):
+            print("⚠️ Nenhum dado de áreas verdes encontrado")
+            return
+        
+        print(f"✅ Carregadas {len(areaverde_data['features'])} praças/largos")
+        
+        # Versão mínima sem tooltips complexos
+        folium.GeoJson(
+            areaverde_data,
+            name='Praças e Largos',
+            style_function=lambda x: {
+                'fillColor': 'green',
+                'color': 'darkgreen',
+                'weight': 1,
+                'fillOpacity': 0.5,
+            },
+            tooltip=folium.GeoJsonTooltip(
+                fields=['nome'] if 'nome' in get_feature_properties(areaverde_data) else [],
+                aliases=['Praça:']
+            ),
+            show=True
+        ).add_to(map_object)
+        
+        print("✅ Layer de praças e largos adicionado!")
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
 
 #   Função para capturar propriedades dos distritos e sub-prefeituras.
 def get_feature_properties(geojson_data):

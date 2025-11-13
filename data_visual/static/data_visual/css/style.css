@@ -187,6 +187,14 @@ body {
     width: 100%;
 }
 
+.aqi-legend {
+    width: 35%;
+    padding: 10px; 
+    border-radius: 5px; 
+    border: 1px solid #dee2e6;
+    font-size: 15px;
+}
+
 .indicators-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
