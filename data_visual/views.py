@@ -86,7 +86,7 @@ def sp_map_dashboard(request):
     # Adiciona camada de subprefeituras
     add_subprefeituras_layer(sp_map)
     # Adiciona marcadores estações de medição
-    add_station_marker(sp_map)
+    add_station_data(sp_map)
     # Adiciona camada com praças e largos
     add_areaverde_layer(sp_map)
     
@@ -377,16 +377,6 @@ def add_station_data(map_object):
         popup_html = f'''
         <div style="min-width: 200px;">
             <h4 style="margin: 0 0 10px 0; color: #333;">{data.station_name}</h4>
-            <div style="background-color: {aqi_color}; color: white; padding: 5px; border-radius: 3px; text-align: center; margin-bottom: 10px;">
-                <strong>AQI: {data.aqi} - {aqi_description}</strong>
-            </div>
-            <table style="width: 100%; font-size: 12px;">
-                <tr><td>PM2.5:</td><td><strong>{data.pm2_5:.1f} µg/m³</strong></td></tr>
-                <tr><td>PM10:</td><td><strong>{data.pm10:.1f} µg/m³</strong></td></tr>
-                <tr><td>NO₂:</td><td><strong>{data.no2:.1f} µg/m³</strong></td></tr>
-                <tr><td>O₃:</td><td><strong>{data.o3:.1f} µg/m³</strong></td></tr>
-                <tr><td>CO:</td><td><strong>{data.co:.1f} µg/m³</strong></td></tr>
-            </table>
             <button onclick="loadStationChart('{data.station_id}')" 
                     style="width: 100%; margin-top: 10px; padding: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
                 Ver Gráficos
@@ -395,11 +385,11 @@ def add_station_data(map_object):
         '''
         
         # Escolher ícone baseado na qualidade do ar
-        icon_type = 'info-sign' if data.aqi <= 2 else 'exclamation-sign'
+        icon_type = 'leaf'
         
         marker = folium.Marker(
             coords,
-            #popup=folium.Popup(popup_html, max_width=300),
+            popup=folium.Popup(popup_html, max_width=300),
             tooltip=f"{data.station_name} - AQI: {data.aqi} ({aqi_description})",
             icon=folium.Icon(color=aqi_color, icon=icon_type)
         )
