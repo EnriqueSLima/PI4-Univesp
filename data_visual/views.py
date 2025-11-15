@@ -397,7 +397,7 @@ def add_station_data(map_object):
         <div style="min-width: 200px;">
             <h4 style="margin: 0 0 10px 0; color: #333;">{data.station_name}</h4>
             <button onclick="loadStationChart('{data.station_id}')" 
-                    style="width: 100%; margin-top: 10px; padding: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                    style="margin-top: 10px; padding: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
                 Ver Gráficos
             </button>
         </div>
